@@ -59,6 +59,13 @@ public:
         << " _matrice: "
         << std::endl;
 
+        for(int i = 0; i < matrice._lignes; ++i) {
+            for(int j = 0; j < matrice._colonnes; ++j) {
+                os << matrice[i][j] << " ";
+            }
+            os << std::endl;
+        }
+
         return os;
     }
 
