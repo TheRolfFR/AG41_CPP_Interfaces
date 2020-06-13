@@ -113,29 +113,14 @@ private :
         std::map<int, double> totalKm;
         std::map<int, long> totalHeures;
 
-        double minKm = 0;
-        long minHeures = 0;
+        // on somme et on min
+        double sommeKm = 0;
+        long sommeHeures = 0;
         for(unsigned int i = 0; i < NBR_INTERFACES; ++i) {
             std::pair<double, long> res = totalInterface(i);
 
             totalKm[i] = res.first;
             totalHeures[i] = res.second;
-
-            if(minKm > totalKm[i]) {
-                minKm = totalKm[i];
-            }
-
-            if(minHeures > totalHeures[i]) {
-                minHeures = totalHeures[i];
-            }
-        }
-
-        // on somme et on min
-        double sommeKm = 0;
-        long sommeHeures = 0;
-        for(unsigned int i = 0; i < NBR_INTERFACES; ++i) {
-            totalKm[i] -= minKm;
-            totalHeures[i] -= minHeures;
 
             sommeKm += totalKm[i];
             sommeHeures += totalHeures[i];
