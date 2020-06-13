@@ -6,8 +6,7 @@
 #include <cmath>
 #include <vector>
 #include "Matrice.h"
-#include "Informations.h"
-
+#include "jeuEssai.h"
 class Algorithm : public Informations
 {
 private :
@@ -228,143 +227,156 @@ public :
         }
 
         int i, j ;
+    /* Do the modification on a copy of the distance matrix */
 
-        long eval_node_child = eval_node_parent;
+    Matrice M(M0);
 
-        /**
-         * substract the min of the rows and the min of the columns
-         * and update the evaluation of the current node
-         */
+    int i, j ;
 
-        long min_row[NBR_INTERFACES];
-        for(i=0;i<NBR_INTERFACES;++i)
+    /**
+     * substract the min of the rows and the min of the columns
+     * and update the evaluation of the current node
+     */
+
+    double min_row[NBR_INTERFACES];
+    for(i=0;i<NBR_INTERFACES;++i)
+    {
+        min_row[i] = -1;
+        for(j=0;j<NBR_FORMATION;++j)
         {
-            min_row[i] = -1;
-            for(j=0;j<NBR_FORMATION;++j)
+            if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
             {
-                if(d[i][j]>=0 && (min_row[i]<0||min_row[i]>d[i][j]))
-                {
-                    min_row[i] = d[i][j];
-                }
-            }
-            for(j=0;j<NBR_FORMATION;++j)
-            {
-                if(d[i][j]>=0)
-                {
-                    d[i][j] -= min_row[i];
-                }
+                min_row[i] = M[i][j];
             }
         }
+        for(j=0;j<NBR_FORMATION;++j)
+        {
+            if(M[i][j]>=0)
+            {
+                M[i][j] -= min_row[i];
+            }
+        }
+    }
 
         long min_column[NBR_FORMATION];
 
-        for(i=0;i<NBR_INTERFACES;++i)
+    for(i=0;i<NBR_INTERFACES;++i)
+    {
+        min_column[i] = -1.0;
+        for(j=0;j<NBR_FORMATION;++j)
         {
-            min_column[i] = -1.0;
-            for(j=0;j<NBR_FORMATION;++j)
+            if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))
             {
-                if(d[j][i]>=0 && (min_column[i]<0||min_column[i]>d[j][i]))
-                {
-                    min_column[i] = d[j][i];
-                }
+                min_column[i] = M[j][i];
             }
-            for(j=0;j<NBR_FORMATION;++j)
+        }
+        for(j=0;j<NBR_FORMATION;++j)
+        {
+            if(M[j][i]>=0)
             {
-                if(d[j][i]>=0)
-                {
-                    d[j][i] -= min_column[i];
-                }
+                M[j][i] -= min_column[i];
             }
-
         }
 
-        for(i=0;i<NBR_INTERFACES;++i)
+    }
+
+    for(i=0;i<NBR_INTERFACES;++i)
+    {
+        eval_node_child += min_row[i]+min_column[i];
+    }
+
+    /* Cut : stop the exploration of this node */
+    if (best_eval>=0 && eval_node_child >= best_eval)
+        return;
+
+
+    /**
+     *  Compute the penalities to identify the zero with max penalty
+     *  If no zero in the matrix, then return, solution infeasible
+     */
+
+    /* row and column of the zero with the max penalty */
+    int izero=-1, jzero=-1 ;
+    long max_zero = -3;
+
+    for(i=0;i<NBR_INTERFACES;++i)
+    {
+        for(j=0;j<NBR_FORMATION;++j)
         {
-            eval_node_child += min_row[i]+min_column[i];
-        }
-
-        /* Cut : stop the exploration of this node */
-        if (best_eval>=0 && eval_node_child >= best_eval)
-            return;
-
-
-        /**
-         *  Compute the penalities to identify the zero with max penalty
-         *  If no zero in the matrix, then return, solution infeasible
-         */
-
-        /* row and column of the zero with the max penalty */
-        int izero=-1, jzero=-1 ;
-        long max_zero = -3;
-
-        for(i=0;i<NBR_INTERFACES;++i)
-        {
-            for(j=0;j<NBR_FORMATION;++j)
+            if(M[i][j] == 0.0)
             {
-                if(d[i][j] == 0.0)
+                double min_row_zero = -1;
+                double min_column_zero = -1;
+                for(int y1=0;y1<NBR_FORMATION;++y1)
                 {
-                    long min_row_zero = -1;
-                    long min_column_zero = -1;
-                    for(int y=0;y<NBR_TOWNS;++y)
+                    if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>d[i][y1])) && (y1!=j))
                     {
-                        if((d[i][y]>=0 && (min_row_zero<0||min_row_zero>d[i][y])) && (y!=j))
-                        {
-                            min_row_zero = d[i][y];
-                        }
-                        if((d[y][j]>=0 && (min_column_zero<0||min_column_zero>d[y][j])) && (y!=i))
-                        {
-                            min_column_zero = d[y][j];
-                        }
-                    }
-                    long this_zero = min_row_zero + min_column_zero;
-                    if(this_zero>max_zero)
-                    {
-                        max_zero = this_zero;
-                        izero = i;
-                        jzero = j;
+                        min_row_zero = M[i][y1];
                     }
                 }
+                for(int y2=0; y2<NBR_INTERFACES; y2++)
+                {
+                    if((M[y][j]>=0 && (min_column_zero<0||min_column_zero>M[y][j])) && (y!=i))
+                    {
+                        min_column_zero = M[y][j];
+                    }
+                }
+                double this_zero = min_row_zero + min_column_zero;
+                if(this_zero>max_zero)
+                {
+                    max_zero = this_zero;
+                    izero = i;
+                    jzero = j;
+                }
             }
         }
-        if(max_zero == -3)
+    }
+    if(max_zero == -3)
+    {
+        /*printf("Solution Infesable\n");*/
+        return;
+    }
+
+
+    /**
+     *  Store the row and column of the zero with max penalty in
+     *  starting_town and ending_town
+     */
+
+    mettreAJourSolution(iteration, izero, jzero);
+
+    /* Do the modification on a copy of the distance matrix */
+    Matrice M2(M);
+
+    /**
+     *  Modify the matrix d2 according to the choice of the zero with the max penalty
+     */
+
+    for(int y=0;y<NBR_FORMATION;++y)
+    {
+        if(M2[izero][y] != -1)
         {
-            /*printf("Solution Infesable\n");*/
-            return;
+            //ajout de la distance effectuée
         }
+    }
+    for(y=0;y<NBR_INTERFACES;++y)
+    {
+        M2[y][jzero] = -1;
+    }
+    M2[jzero][izero] = -1;
 
+    /* Explore left child node according to given choice */
+    solve_algorithm(M2, iteration + 1, eval_node_child);
 
-        /**
-         *  Store the row and column of the zero with max penalty in
-         *  starting_town and ending_town
-         */
+    /* Do the modification on a copy of the distance matrix */
+    Matrice M3(M);
 
-        mettreAJourSolution(iteration, izero, jzero);
+    /**
+     *  Modify the dist matrix to explore the other possibility : the non-choice
+     *  of the zero with the max penalty
+     */
 
-        /* Do the modification on a copy of the distance matrix */
-        Matrice M1(M0);
-
-        /**
-         *  Modify the matrix d2 according to the choice of the zero with the max penalty
-         */
-
-        for(int y=0; y<NBR_INTERFACES; ++y)
-        {
-            M1[izero][y] = -1;
-            M1[y][jzero] = -1;
-        }
-        M1[jzero][izero] = -1;
-
-        /* Explore left child node according to given choice */
-        solve_algorithm(&M1, iteration + 1, eval_node_child);
-
-        // Faire une copie de la matrice et faire des modifications
-        Matrice M2 = Matrice(M0);
-
-        /**
-         *  Modify the dist matrix to explore the other possibility : the non-choice
-         *  of the zero with the max penalty
-         */
-        M2[izero][jzero] = -1;
+    M3[izero][jzero] = -1;
 
         /* Explore right child node according to non-choice */
         solve_algorithm(&M2, iteration, eval_node_child);
