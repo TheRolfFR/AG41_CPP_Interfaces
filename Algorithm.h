@@ -213,11 +213,10 @@ public :
     {
         if (iteration == NBR_FORMATION)
         {
-            construireSolution(M0);
+            construireSolution();
             return;
         }
 
-        int i, j ;
     /* Do the modification on a copy of the distance matrix */
 
     Matrice M(M0);
