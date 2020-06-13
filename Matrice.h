@@ -69,6 +69,14 @@ public:
         return os;
     }
 
+    void ajouter(long valeur) {
+        for(int i = 0; i < _lignes; ++i) {
+            for(int j = 0; j < _colonnes; ++j) {
+                _matrice[i][j] += valeur;
+            }
+        }
+    }
+
     virtual ~Matrice() {
         delete _matrice;
     }
