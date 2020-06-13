@@ -1,4 +1,8 @@
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
+#pragma ide diagnostic ignored "UnusedStructInspection"
+#pragma ide diagnostic ignored "UnusedGlobalDeclarationInspection"
 #ifndef AG41_PROJET_ALGORITHM_H
 #define AG41_PROJET_ALGORITHM_H
 
@@ -108,7 +112,7 @@ private :
         return resultat;
     }
 
-    void construireSolution(Matrice *m) {
+    void construireSolution() {
         // initialisation
         std::map<int, double> totalKm;
         std::map<int, long> totalHeures;
