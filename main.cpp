@@ -4,6 +4,8 @@
 #include "Matrice.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Matrice m = Matrice(10, 10);
+
+    std::cout << "coucou" << std::endl;
     return 0;
 }

@@ -5,13 +5,50 @@
 #ifndef GL41_PROJET_MATRICE_H
 #define GL41_PROJET_MATRICE_H
 
+#include <iostream>
+#include <cstring>
+
 class Matrice {
 private:
-    bool _matrice[][];
+    int _lignes;
+    int _colonnes;
+    bool **_matrice;
+
+    void createMatrix() {
+        _matrice = new bool*[_lignes];
+
+        for(int i = 0; i < _lignes; ++i) {
+            _matrice[i] = new bool[_colonnes];
+
+            for(int j = 0; j < _colonnes; ++j) {
+                _matrice[i][j] = 0;
+            }
+        }
+    }
 public:
-    Matrice(int lignes, int colonnes) {
-        _matrice = new bool[lignes*colonnes];
-    } // Constructs an empty list
+    Matrice(int lignes, int colonnes) : _lignes(lignes), _colonnes(colonnes) {
+        createMatrix();
+    }
+
+    Matrice(const Matrice& autre) : _lignes(autre._lignes), _colonnes(autre._colonnes) {
+        _matrice = new bool*[_lignes];
+
+        createMatrix();
+
+        std::memcpy(_matrice, autre._matrice, sizeof(bool)*_lignes*_colonnes);
+    }
+
+    Matrice(Matrice* autre) : _lignes(autre->_lignes), _colonnes(autre->_colonnes) {
+        _matrice = new bool*[_lignes];
+
+        createMatrix();
+
+        std::memcpy(_matrice, autre->_matrice, sizeof(bool)*_lignes*_colonnes);
+    }
+
+    virtual ~Matrice() {
+        delete _matrice;
+    }
 };
 
 
