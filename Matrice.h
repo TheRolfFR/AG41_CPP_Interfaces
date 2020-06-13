@@ -51,6 +51,10 @@ public:
         return _matrice[x][y];
     }
 
+    long* operator[](int x) {
+        return _matrice[x];
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const Matrice &matrice) {
         os << "_lignes: "
         << matrice._lignes

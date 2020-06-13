@@ -4,6 +4,9 @@
 #include "Matrice.h"
 #include "jeuEssai.h"
 
+#define INDEX_DEBUT_FORMATION 4
+#define INDEX_FIN_FORMATION 5
+
 class Algorithm 
 {
 private : 
@@ -28,6 +31,10 @@ public :
     void update_matrice();
     void create_matrice();
     void eval();
+
+    long dureeFormation(int ligneFormation) {
+        return formation[ligneFormation][INDEX_FIN_FORMATION] - formation[ligneFormation][INDEX_FIN_FORMATION];
+    }
 
 };
 
