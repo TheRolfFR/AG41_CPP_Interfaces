@@ -51,9 +51,14 @@ Matrice attribute(Matrice M)
     return M2;
 };
 
+void build_solution()
+{
+    //à faire
+};
+
 void solve_algorithm(Matrice M0, int iteration, double eval_node_parent)
 {
-    if (iteration == )
+    if (iteration == NBR_FORMATION)
     {
         build_solution ();
         return;
@@ -61,6 +66,7 @@ void solve_algorithm(Matrice M0, int iteration, double eval_node_parent)
 
     /* Do the modification on a copy of the distance matrix */
     
+    Matrice M(M0);
 
     int i, j ;
 
@@ -77,16 +83,16 @@ void solve_algorithm(Matrice M0, int iteration, double eval_node_parent)
         min_row[i] = -1;
         for(j=0;j<NBR_FORMATION;++j)
         {
-            if(d[i][j]>=0 && (min_row[i]<0||min_row[i]>d[i][j]))
+            if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
             {
-                min_row[i] = d[i][j];
+                min_row[i] = M[i][j];
             }
         }
         for(j=0;j<NBR_FORMATION;++j)
         {
-            if(d[i][j]>=0)
+            if(M[i][j]>=0)
             {
-                d[i][j] -= min_row[i];
+                M[i][j] -= min_row[i];
             }
         }
     }
@@ -98,16 +104,16 @@ void solve_algorithm(Matrice M0, int iteration, double eval_node_parent)
         min_column[i] = -1.0;
         for(j=0;j<NBR_FORMATION;++j)
         {
-            if(d[j][i]>=0 && (min_column[i]<0||min_column[i]>d[j][i]))
+            if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))
             {
-                min_column[i] = d[j][i];
+                min_column[i] = M[j][i];
             }
         }
         for(j=0;j<NBR_FORMATION;++j)
         {
-            if(d[j][i]>=0)
+            if(M[j][i]>=0)
             {
-                d[j][i] -= min_column[i];
+                M[j][i] -= min_column[i];
             }
         }
 
@@ -136,19 +142,22 @@ void solve_algorithm(Matrice M0, int iteration, double eval_node_parent)
     {
         for(j=0;j<NBR_FORMATION;++j)
         {
-            if(d[i][j] == 0.0)
+            if(M[i][j] == 0.0)
             {
                 double min_row_zero = -1;
                 double min_column_zero = -1;
-                for(int y=0;y<NBR_TOWNS;++y)
+                for(int y1=0;y1<NBR_FORMATION;++y1)
                 {
-                    if((d[i][y]>=0 && (min_row_zero<0||min_row_zero>d[i][y])) && (y!=j))
+                    if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>d[i][y1])) && (y1!=j))
                     {
-                        min_row_zero = d[i][y];
+                        min_row_zero = M[i][y1];
                     }
-                    if((d[y][j]>=0 && (min_column_zero<0||min_column_zero>d[y][j])) && (y!=i))
+                }
+                for(int y2=0; y2<NBR_INTERFACES; y2++)
+                {
+                    if((M[y][j]>=0 && (min_column_zero<0||min_column_zero>M[y][j])) && (y!=i))
                     {
-                        min_column_zero = d[y][j];
+                        min_column_zero = M[y][j];
                     }
                 }
                 double this_zero = min_row_zero + min_column_zero;
@@ -173,45 +182,45 @@ void solve_algorithm(Matrice M0, int iteration, double eval_node_parent)
      *  starting_town and ending_town
      */
 
-    starting_town[iteration]=izero;
-    ending_town[iteration]=jzero;
+    //starting_town[iteration]=izero;
+    //ending_town[iteration]=jzero;
 
     /* Do the modification on a copy of the distance matrix */
-    double d2[NBR_TOWNS][NBR_TOWNS] ;
-    memcpy (d2, d, NBR_TOWNS*NBR_TOWNS*sizeof(double)) ;
+    Matrice M2(M);
 
     /**
      *  Modify the matrix d2 according to the choice of the zero with the max penalty
      */
 
-    for(int y=0;y<NBR_TOWNS;++y)
+    for(int y=0;y<NBR_FORMATION;++y)
     {
-        d2[izero][y] = -1;
-        d2[y][jzero] = -1;
+        if(M2[izero][y] != -1)
+        {
+            //ajout de la distance effectuée
+        }
     }
-    d2[jzero][izero] = -1;
+    for(y=0;y<NBR_INTERFACES;++y)
+    {
+        M2[y][jzero] = -1;
+    }
+    M2[jzero][izero] = -1;
 
     /* Explore left child node according to given choice */
     solve_algorithm(M2, iteration + 1, eval_node_child);
 
     /* Do the modification on a copy of the distance matrix */
-    memcpy (d2, d, NBR_TOWNS*NBR_TOWNS*sizeof(double)) ;
+    Matrice M3(M);
 
     /**
      *  Modify the dist matrix to explore the other possibility : the non-choice
      *  of the zero with the max penalty
      */
 
-    d2[izero][jzero] = -1;
+    M3[izero][jzero] = -1;
 
     /* Explore right child node according to non-choice */
-    solve_algorithm(M2, iteration, eval_node_child);
+    solve_algorithm(M3, iteration, eval_node_child);
 };
-
-void update_hach();
-void update_matrice();
-void create_matrice();
-void eval();
 
 long dureeFormation(int indiceFomation) {
     return formation[indiceFomation][INDICE_FIN_FORMATION] - formation[indiceFomation][INDICE_DEBUT_FORMATION];
