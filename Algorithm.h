@@ -7,6 +7,8 @@
 #include <vector>
 #include "Matrice.h"
 #include "jeuEssai.h"
+#include "Informations.h"
+
 class Algorithm : public Informations
 {
 private :
