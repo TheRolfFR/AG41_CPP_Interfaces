@@ -22,16 +22,18 @@ public :
         Matrice M2(M);
         for(int i=0;i<NBR_APPRENANTS;++i)
         {
-            for(j=0;j<NBR_FORMATION;++j)
+            for(int j=0;j<NBR_FORMATION;++j)
             {
-                if()
+                // if()
             }
         }
     };
     Matrice attribute(Matrice M)
     {
-        voir
+        // voir
+        return M;
     };
+
     void update_hach();
     void update_matrice();
     void create_matrice();
