@@ -2,23 +2,24 @@
 // Created by TheRolf on 13/06/2020.
 //
 
-#ifndef GL41_PROJET_MATRICE_H
-#define GL41_PROJET_MATRICE_H
+#ifndef AG41_PROJET_MATRICE_H
+#define AG41_PROJET_MATRICE_H
 
 #include <iostream>
 #include <cstring>
+#include "jeuEssai.h"
 
 class Matrice {
 private:
     int _lignes;
     int _colonnes;
-    bool **_matrice;
+    long **_matrice;
 
     void createMatrix() {
-        _matrice = new bool*[_lignes];
+        _matrice = new long *[_lignes];
 
         for(int i = 0; i < _lignes; ++i) {
-            _matrice[i] = new bool[_colonnes];
+            _matrice[i] = new long[_colonnes];
 
             for(int j = 0; j < _colonnes; ++j) {
                 _matrice[i][j] = 0;
@@ -31,7 +32,7 @@ public:
     }
 
     Matrice(const Matrice& autre) : _lignes(autre._lignes), _colonnes(autre._colonnes) {
-        _matrice = new bool*[_lignes];
+        _matrice = new long*[_lignes];
 
         createMatrix();
 
@@ -39,11 +40,26 @@ public:
     }
 
     Matrice(Matrice* autre) : _lignes(autre->_lignes), _colonnes(autre->_colonnes) {
-        _matrice = new bool*[_lignes];
+        _matrice = new long*[_lignes];
 
         createMatrix();
 
         std::memcpy(_matrice, autre->_matrice, sizeof(bool)*_lignes*_colonnes);
+    }
+
+    long get(int x, int y) {
+        return _matrice[x][y];
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const Matrice &matrice) {
+        os << "_lignes: "
+        << matrice._lignes
+        << " _colonnes: "
+        << matrice._colonnes
+        << " _matrice: "
+        << std::endl;
+
+        return os;
     }
 
     virtual ~Matrice() {
@@ -52,4 +68,4 @@ public:
 };
 
 
-#endif //GL41_PROJET_MATRICE_H
+#endif //AG41_PROJET_MATRICE_H

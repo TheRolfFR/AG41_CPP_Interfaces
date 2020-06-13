@@ -2,8 +2,8 @@
 // Created by TheRolf on 13/06/2020.
 //
 
-#ifndef GL41_PROJET_JEUESSAI_H
-#define GL41_PROJET_JEUESSAI_H
+#ifndef AG41_PROJET_JEUESSAI_H
+#define AG41_PROJET_JEUESSAI_H
 
 #define NBR_INTERFACES        10
 #define NBR_APPRENANTS           8
@@ -98,4 +98,4 @@ int formation[NBR_FORMATION][6] =
         {7, SPECIALITE_ELECTRICITE, COMPETENCE_CODAGE, VENDREDI, 8,  11}
 };
 
-#endif //GL41_PROJET_JEUESSAI_H
+#endif //AG41_PROJET_JEUESSAI_H
