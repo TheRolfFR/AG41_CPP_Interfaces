@@ -189,7 +189,7 @@ public :
                         throw "Sans formation.";
                     else
                     {
-                        if(formation[j][2] != specialite_interfaces[i]) // ça correspond à quoi ça, ça compile pas d'ailleurs
+                        if(formation[j][1] != specialite_interfaces[i]) // interface scpecialities verification
                         {
                             M2[i][j] = -1;
                         }
@@ -200,7 +200,7 @@ public :
                 {
                     //do nothing
                 }
-                if (competences_interfaces[i] != formation[j][2]) // je ne sais pas
+                if (competences_interfaces[i] != formation[j][2]) // interfaces skills verefication
                 {
                     M2[i][j] = -1;
                 }
