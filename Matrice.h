@@ -51,6 +51,10 @@ public:
         return _matrice[x][y];
     }
 
+    long* operator[](int x) {
+        return _matrice[x];
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const Matrice &matrice) {
         os << "_lignes: "
         << matrice._lignes
@@ -61,12 +65,20 @@ public:
 
         for(int i = 0; i < matrice._lignes; ++i) {
             for(int j = 0; j < matrice._colonnes; ++j) {
-                os << matrice[i][j] << " ";
+                os << matrice._matrice[i][j] << " ";
             }
             os << std::endl;
         }
 
         return os;
+    }
+
+    void ajouter(long valeur) {
+        for(int i = 0; i < _lignes; ++i) {
+            for(int j = 0; j < _colonnes; ++j) {
+                _matrice[i][j] += valeur;
+            }
+        }
     }
 
     virtual ~Matrice() {

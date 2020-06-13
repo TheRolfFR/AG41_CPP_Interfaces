@@ -1,0 +1,1 @@
+g++ main.cpp -o main -Wall && chmod +x main && ./main

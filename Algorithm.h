@@ -1,51 +1,59 @@
 
 #ifndef AG41_PROJET_ALGORITHM_H
 #define AG41_PROJET_ALGORITHM_H
+
+#include <map>
 #include "Matrice.h"
 #include "jeuEssai.h"
+
+#define INDICE_JOUR_FORMATION 3
+#define INDICE_DEBUT_FORMATION 4
+#define INDICE_FIN_FORMATION 5
+
+#define JOURS_DANS_LA_SEMAINE 7
 
 class Algorithm 
 {
 private : 
-
+    std::map<int, int> _choix;
 public : 
 
-    Matrice attribute(Matrice M)
+Matrice attribute(Matrice M)
+{
+    Matrice M2(M);
+    for(int i=0;i<NBR_APPRENANTS;++i)
     {
-        Matrice M2(M);
-        for(int i=0;i<NBR_APPRENANTS;++i)
+        for(int j=0;j<NBR_FORMATION;++j)
         {
-            for(j=0;j<NBR_FORMATION;++j)
+            try
             {
-                try
+                if(formation[j][1] == -1)
+                    throw string("Sans formation.");
+                else
                 {
-                    if(formation[j][1] == -1)
-                        throw string("Sans formation.");
-                    else
+                    if(formation[j][2] != specialite_interfaces[i])
                     {
-                        if(formation[j][2] != specialite_interfaces[i])
-                        {
-                            M2[i][j] = -1;
-                        }
+                        M2[i][j] = -1;
                     }
-                    
                 }
-                catch (string const& chaine)
-                {
-                    //do nothing
-                }
-                if (competences_interfaces[i] != formation[j][2])
-                {
-                    M2[i][j] = -1;
-                }
+                 
+            }
+           catch (string const& chaine)
+            {
+                //do nothing
+            }
+            if (competences_interfaces[i] != formation[j][2])
+            {
+                M2[i][j] = -1;
             }
         }
-        return M2;
-    };
+    }
+    return M2;
+};
 
-    void solve_algorithm(Matrice M0, int iteration, double eval_node_parent)
-    {
-            if (iteration == )
+void solve_algorithm(Matrice M0, int iteration, double eval_node_parent)
+{
+    if (iteration == )
     {
         build_solution ();
         return;
@@ -63,18 +71,18 @@ public :
      * and update the evaluation of the current node
      */
 
-    double min_row[NBR_TOWNS];
-    for(i=0;i<NBR_TOWNS;++i)
+    double min_row[NBR_INTERFACES];
+    for(i=0;i<NBR_INTERFACES;++i)
     {
         min_row[i] = -1;
-        for(j=0;j<NBR_TOWNS;++j)
+        for(j=0;j<NBR_FORMATION;++j)
         {
             if(d[i][j]>=0 && (min_row[i]<0||min_row[i]>d[i][j]))
             {
                 min_row[i] = d[i][j];
             }
         }
-        for(j=0;j<NBR_TOWNS;++j)
+        for(j=0;j<NBR_FORMATION;++j)
         {
             if(d[i][j]>=0)
             {
@@ -83,19 +91,19 @@ public :
         }
     }
 
-    double min_column[NBR_TOWNS];
+    double min_column[NBR_FORMATION];
 
-    for(i=0;i<NBR_TOWNS;++i)
+    for(i=0;i<NBR_INTERFACES;++i)
     {
         min_column[i] = -1.0;
-        for(j=0;j<NBR_TOWNS;++j)
+        for(j=0;j<NBR_FORMATION;++j)
         {
             if(d[j][i]>=0 && (min_column[i]<0||min_column[i]>d[j][i]))
             {
                 min_column[i] = d[j][i];
             }
         }
-        for(j=0;j<NBR_TOWNS;++j)
+        for(j=0;j<NBR_FORMATION;++j)
         {
             if(d[j][i]>=0)
             {
@@ -105,7 +113,7 @@ public :
 
     }
 
-    for(i=0;i<NBR_TOWNS;++i)
+    for(i=0;i<NBR_INTERFACES;++i)
     {
         eval_node_child += min_row[i]+min_column[i];
     }
@@ -124,9 +132,9 @@ public :
     int izero=-1, jzero=-1 ;
     double max_zero = -3;
 
-    for(i=0;i<NBR_TOWNS;++i)
+    for(i=0;i<NBR_INTERFACES;++i)
     {
-        for(j=0;j<NBR_TOWNS;++j)
+        for(j=0;j<NBR_FORMATION;++j)
         {
             if(d[i][j] == 0.0)
             {
@@ -198,13 +206,48 @@ public :
 
     /* Explore right child node according to non-choice */
     solve_algorithm(M2, iteration, eval_node_child);
-    };
-
-    void update_hach();
-    void update_matrice();
-    void create_matrice();
-    void eval();
-
 };
+
+void update_hach();
+void update_matrice();
+void create_matrice();
+void eval();
+
+long dureeFormation(int indiceFomation) {
+    return formation[indiceFomation][INDICE_FIN_FORMATION] - formation[indiceFomation][INDICE_DEBUT_FORMATION];
+};
+
+long heuresDuJour(int interface, int jour) {
+    long somme = 0;
+
+    // pour chaque choix dans _choix fait
+    int indiceFormation;
+    int interfaceAffectee;
+    int jourDeLaTache;
+    for(std::map<int, int>::iterator c = _choix.begin(); c != _choix.end(); c++) {
+        indiceFormation = c->first;
+        interfaceAffectee = c->second;
+
+        jourDeLaTache = formation[indiceFormation][INDICE_JOUR_FORMATION];
+
+        // si la tache est affectee l'interface choisie correspond (valeur) et que le jour correspond
+        if(interfaceAffectee == interface && jourDeLaTache == jour) {
+            // alors on ajoute la duree de l formation
+            somme += dureeFormation(indiceFormation);
+        }
+    }
+
+    return somme;
+};
+
+long heuresDeLaSemaine(int interface) {
+    long somme;
+
+    for(int i = 0; i < JOURS_DANS_LA_SEMAINE; ++i) {
+        somme += heuresDuJour(interface, i+1);
+    }
+
+    return somme;
+    };
 
 #endif //AG41_PROJET_ALGORITHM
