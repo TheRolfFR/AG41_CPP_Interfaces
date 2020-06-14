@@ -221,18 +221,6 @@ private :
 
         return;
     }
-public:
-
-    Algorithm() :
-        meilleureVarianceKm(-1),
-        meilleureVarianceHeures(-1),
-        meilleureSolution(NBR_FORMATION, std::pair<int, int>(-1,-1)),
-        position(),
-        _choix(NBR_FORMATION, std::pair<int, int>(-1,-1)) {
-
-        calculSommeDureeFormations();
-
-    }
     //initialisation de M
     //Si l'interface i est compétente pour une tâche y, M[i][y]=0 sinon M[i][y]=-1
     Matrice attribute(Matrice M)
@@ -242,23 +230,23 @@ public:
         {
             for(int j=0;j<NBR_FORMATION;++j)
             {
-               /* try
-                {
-                    if(formation[j][1] == -1)
-                        throw "Sans formation.";
-                    else
-                    {
-                        if(formation[j][1] != specialite_interfaces[i]) // vérification des spécialités des interfaces
-                        {
-                            M2[i][j] = -1;
-                        }
-                    }
+                /* try
+                 {
+                     if(formation[j][1] == -1)
+                         throw "Sans formation.";
+                     else
+                     {
+                         if(formation[j][1] != specialite_interfaces[i]) // vérification des spécialités des interfaces
+                         {
+                             M2[i][j] = -1;
+                         }
+                     }
 
-                }
-                catch (String const& chaine)
-                {
-                    //do nothing
-                }*/
+                 }
+                 catch (String const& chaine)
+                 {
+                     //do nothing
+                 }*/
                 if (competences_interfaces[i][formation[j][INDICE_COMPETENCE_INTERFACE_FORMATION]] == 0) // vérification des compétences des interfaces
                     M2[i][j] = -1;
             }
@@ -274,160 +262,172 @@ public:
             return;
         }
 
-    /* Fais les modifications sur une copie de la matrice */
+        /* Fais les modifications sur une copie de la matrice */
 
-    Matrice M(M0);
+        Matrice M(M0);
 
-    int i, j ;
+        int i, j ;
 
-    /**
-     * soustrait le min de chaque line et le min de chaque colonne
-     * et met à jour l'évaluation du noeud actuel
-     */
+        /**
+         * soustrait le min de chaque line et le min de chaque colonne
+         * et met à jour l'évaluation du noeud actuel
+         */
 
-    double min_row[NBR_INTERFACES];
-    for(i=0;i<NBR_INTERFACES;++i)
-    {
-        min_row[i] = -1;
-        for(j=0;j<NBR_FORMATION;++j)
+        double min_row[NBR_INTERFACES];
+        for(i=0;i<NBR_INTERFACES;++i)
         {
-            if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
+            min_row[i] = -1;
+            for(j=0;j<NBR_FORMATION;++j)
             {
-                min_row[i] = M[i][j];
+                if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
+                {
+                    min_row[i] = M[i][j];
+                }
+            }
+            for(j=0;j<NBR_FORMATION;++j)
+            {
+                if(M[i][j]>=0)
+                {
+                    M[i][j] -= min_row[i];
+                }
             }
         }
-        for(j=0;j<NBR_FORMATION;++j)
-        {
-            if(M[i][j]>=0)
-            {
-                M[i][j] -= min_row[i];
-            }
-        }
-    }
 
         long min_column[NBR_FORMATION];
 
-    for(i=0;i<NBR_INTERFACES;++i)
-    {
-        min_column[i] = -1.0;
-        for(j=0;j<NBR_FORMATION;++j)
+        for(i=0;i<NBR_INTERFACES;++i)
         {
-            if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))
+            min_column[i] = -1.0;
+            for(j=0;j<NBR_FORMATION;++j)
             {
-                min_column[i] = M[j][i];
+                if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))
+                {
+                    min_column[i] = M[j][i];
+                }
             }
-        }
-        for(j=0;j<NBR_FORMATION;++j)
-        {
-            if(M[j][i]>=0)
+            for(j=0;j<NBR_FORMATION;++j)
             {
-                M[j][i] -= min_column[i];
+                if(M[j][i]>=0)
+                {
+                    M[j][i] -= min_column[i];
+                }
             }
+
         }
 
-    }
+        /* Coupe: arrêt de l'exploration de ce noeud */
+        if (meilleureVarianceHeures!=-1 && meilleureVarianceKm!=-1)
+        {
+            std::pair<double, double > variances = calculVariances();
+            if (variances.first >10 || variances.second>10)
+                return;
+        }
+        /**
+         *  Additionne les pénalités pour trouver le zéro avec max pénalités
+         *  S'il n'y a pas de zéro dans la matrice retourne "matrice infesable"
+         */
 
-    /* Coupe: arrêt de l'exploration de ce noeud */
-    if (meilleureVarianceHeures!=-1 && meilleureVarianceKm!=-1)
-    {
-        std::pair<double, double > variances = calculVariances();
-        if (variances.first >10 || variances.second>10)
+        /* ligne et column du zéro avec le max pénalité */
+        int izero=-1, jzero=-1 ;
+        long max_zero = -3;
+
+        for(i=0;i<NBR_INTERFACES;++i)
+        {
+            for(j=0;j<NBR_FORMATION;++j)
+            {
+                if(M[i][j] == 0.0)
+                {
+                    double min_row_zero = -1;
+                    double min_column_zero = -1;
+                    //recherche du min de la ligne
+                    for(int y1=0;y1<NBR_FORMATION;++y1)
+                    {
+                        if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>M[i][y1])) && (y1!=j))
+                        {
+                            min_row_zero = M[i][y1];
+                        }
+                    }
+                    //recherche du min de la colonne
+                    for(int y2=0; y2<NBR_INTERFACES; y2++)
+                    {
+                        if((M[y2][j]>=0 && (min_column_zero<0||min_column_zero>M[y2][j])) && (y2!=i))
+                        {
+                            min_column_zero = M[y2][j];
+                        }
+                    }
+                    double this_zero = min_row_zero + min_column_zero;
+                    if(this_zero>max_zero)
+                    {
+                        max_zero = this_zero;
+                        izero = i;
+                        jzero = j;
+                    }
+                }
+            }
+        }
+        if(max_zero == -3)
+        {
+            /*printf("Solution Infesable\n");*/
             return;
-    }
-    /**
-     *  Additionne les pénalités pour trouver le zéro avec max pénalités
-     *  S'il n'y a pas de zéro dans la matrice retourne "matrice infesable"
-     */
+        }
 
-    /* ligne et column du zéro avec le max pénalité */
-    int izero=-1, jzero=-1 ;
-    long max_zero = -3;
 
-    for(i=0;i<NBR_INTERFACES;++i)
-    {
-        for(j=0;j<NBR_FORMATION;++j)
+        /**
+         *  Met à jour l'évaluation de la solution
+         */
+
+        mettreAJourSolution(iteration, izero, jzero);
+
+        /* Fais les modifications sur une copie de la matrice */
+        Matrice M2(M);
+
+        /**
+         *  Modifie la matrice M2 en fonction du choix du zero de pénalité max
+         */
+        // ajout de la distance pour la tache à tout les éléments de la ligne du zero
+        for(int y=0;y<NBR_FORMATION;++y)
         {
-            if(M[i][j] == 0.0)
+            if(M2[izero][y] != -1)
             {
-                double min_row_zero = -1;
-                double min_column_zero = -1;
-                //recherche du min de la ligne
-                for(int y1=0;y1<NBR_FORMATION;++y1)
-                {
-                    if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>M[i][y1])) && (y1!=j))
-                    {
-                        min_row_zero = M[i][y1];
-                    }
-                }
-                //recherche du min de la colonne
-                for(int y2=0; y2<NBR_INTERFACES; y2++)
-                {
-                    if((M[y2][j]>=0 && (min_column_zero<0||min_column_zero>M[y2][j])) && (y2!=i))
-                    {
-                        min_column_zero = M[y2][j];
-                    }
-                }
-                double this_zero = min_row_zero + min_column_zero;
-                if(this_zero>max_zero)
-                {
-                    max_zero = this_zero;
-                    izero = i;
-                    jzero = j;
-                }
+                //(duree*distance)/duree_totale
+                M2[izero][y]= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
             }
         }
-    }
-    if(max_zero == -3)
-    {
-        /*printf("Solution Infesable\n");*/
-        return;
-    }
-
-
-    /**
-     *  Met à jour l'évaluation de la solution
-     */
-
-    mettreAJourSolution(iteration, izero, jzero);
-
-    /* Fais les modifications sur une copie de la matrice */
-    Matrice M2(M);
-
-    /**
-     *  Modifie la matrice M2 en fonction du choix du zero de pénalité max
-     */
-    // ajout de la distance pour la tache à tout les éléments de la ligne du zero
-    for(int y=0;y<NBR_FORMATION;++y)
-    {
-        if(M2[izero][y] != -1)
+        // met à -1 tout les éléments de la colonne du zero
+        for(int y=0;y<NBR_INTERFACES;++y)
         {
-            //(duree*distance)/duree_totale
-            M2[izero][y]= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
+            M2[y][jzero] = -1;
         }
-    }
-    // met à -1 tout les éléments de la colonne du zero
-    for(int y=0;y<NBR_INTERFACES;++y)
-    {
-        M2[y][jzero] = -1;
-    }
-    M2[jzero][izero] = -1;
+        M2[jzero][izero] = -1;
 
-    /* Explore le noeud enfant gauche conformément au choix donné */
+        /* Explore le noeud enfant gauche conformément au choix donné */
         resoudreAlgorithme(&M2, iteration + 1 );
 
-    /* fait les modification sur une copie de la matrice */
-    Matrice M3(M);
+        /* fait les modification sur une copie de la matrice */
+        Matrice M3(M);
 
-    /**
-     *  Modifie la matrice pour explorer l'autre possibilité, le nom choix
-     *  du zero avec pénalité max
-     */
+        /**
+         *  Modifie la matrice pour explorer l'autre possibilité, le nom choix
+         *  du zero avec pénalité max
+         */
 
-    M3[izero][jzero] = -1;
+        M3[izero][jzero] = -1;
 
         /* explore le noeud enfant droit conformément au non-choix */
         resoudreAlgorithme(&M3, iteration );
     };
+public:
+
+    Algorithm() :
+        meilleureVarianceKm(-1),
+        meilleureVarianceHeures(-1),
+        meilleureSolution(NBR_FORMATION, std::pair<int, int>(-1,-1)),
+        position(),
+        _choix(NBR_FORMATION, std::pair<int, int>(-1,-1)) {
+
+        calculSommeDureeFormations();
+
+    }
 
     void lancer() {
         Matrice m(NBR_INTERFACES, NBR_FORMATION);
