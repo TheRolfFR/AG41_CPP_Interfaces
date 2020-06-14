@@ -406,7 +406,7 @@ public :
     M2[jzero][izero] = -1;
 
     /* Explore le noeud enfant gauche conformément au choix donné */
-        resoudreAlgorithme(M2, iteration + 1 /*, eval_node_child*/);
+        resoudreAlgorithme(&M2, iteration + 1 /*, eval_node_child*/);
 
     /* fait les modification sur une copie de la matrice */
     Matrice M3(M);
@@ -419,7 +419,7 @@ public :
     M3[izero][jzero] = -1;
 
         /* explore le noeud enfant droit conformément au non-choix */
-        resoudreAlgorithme(M3, iteration /*, eval_node_child*/);
+        resoudreAlgorithme(&M3, iteration /*, eval_node_child*/);
     };
 
 }
