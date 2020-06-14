@@ -22,10 +22,19 @@ private :
     std::vector<std::pair<int, int>> meilleureSolution;
     PositionInterfaces position;
 
+    long sommeDureeFormations = 0;
+
     //long best_eval = -1;
     std::vector<std::pair<int, int>> _choix; ///< indice de la formation, indice de l'interface affectée
 
     bool premiereJournee = true;
+
+    void calculSommeDureeFormations() {
+        for(int z=0;z<NBR_FORMATION;z++)
+        {
+            sommeDureeFormations += dureeFormation(z);
+        }
+    }
 
     void mettreAJourSolution(int iteration, int indiceInterface, int indiceFormation) {
         _choix[iteration].first = indiceInterface;
@@ -209,6 +218,9 @@ private :
         return;
     }
 public :
+    Algorithm() {
+        calculSommeDureeFormations();
+    }
     //initialisation de M
     //Si l'interface i est compétente pour une tâche y, M[i][y]=0 sinon M[i][y]=-1
     Matrice attribute(Matrice M)
@@ -382,12 +394,8 @@ public :
     {
         if(M2[izero][y] != -1)
         {
-            for(int z=0;z<NBR_FORMATION;z++)
-            {
-                int somme_duree_formation += dureeFormation(z);
-            }
             //(duree*distance)/duree_totale
-            M2[izero][y]= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/somme_duree_formation;
+            M2[izero][y]= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
         }
     }
     // met à -1 tout les éléments de la colonne du zero
