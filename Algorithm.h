@@ -37,9 +37,23 @@ private :
         }
     }
 
+    bool interfaceDisponible(int indiceInterface, int indiceFormation, int iteration) {
+        bool resultat = true;
+
+        unsigned int i = 0;
+        while(i < iteration && resultat) {
+            if(_choix[i].second == indiceInterface && jourFormation(_choix[i].first) == jourFormation(indiceFormation) && formation[indiceFormation][INDICE_DEBUT_FORMATION] <= formation[_choix[i].first][INDICE_FIN_FORMATION]) {
+                resultat = false;
+            }
+            ++i;
+        }
+
+        return resultat;
+    }
+
     void mettreAJourSolution(int iteration, int indiceInterface, int indiceFormation) {
-        _choix[iteration-1].first = indiceInterface;
-        _choix[iteration-1].second = indiceFormation;
+        _choix[iteration-1].first = indiceFormation;
+        _choix[iteration-1].second = indiceInterface;
     }
 
     double distancePourFormation(int indiceInterface, int indiceFormation) {
@@ -156,7 +170,7 @@ private :
     }
 
     std::pair<double, double> calculVariances() {
-        return calculVariances(NBR_FORMATION+1);
+        return calculVariances(NBR_FORMATION-1);
     }
 
     std::pair<double, double> calculVariances(int iteration) {
@@ -231,7 +245,7 @@ private :
         double gainVariance = rapportKm + rapportHeures;
 
 
-        if(gainVariance < 0) {
+        if(gainVariance > 0) {
             affectationMeilleureSolution(varianceKm, varianceHeures);
             meilleureSolution = _choix;
         }
@@ -254,7 +268,7 @@ private :
                      {
                          if(formation[j][1] != specialite_interfaces[i]) // vérification des spécialités des interfaces
                          {
-                             M2[i][j] = -1;
+                             M2(i, j) = -1;
                          }
                      }
 
@@ -264,7 +278,7 @@ private :
                      //do nothing
                  }*/
                 if (competences_interfaces[i][formation[j][INDICE_COMPETENCE_INTERFACE_FORMATION]] == 0) // vérification des compétences des interfaces
-                    M[i][j] = -1;
+                    M(i, j) = -1;
             }
         }
         return;
@@ -294,7 +308,7 @@ private :
         {
             for(j=0;j<NBR_FORMATION;++j)
             {
-                if (M[i][j] == 0)
+                if (M(i, j) == 0)
                 {
                     estZero = false;
                 }
@@ -302,7 +316,7 @@ private :
             i++;
         }
 
-        if (estZero == false)
+        if (!estZero)
         {
             long min_column[NBR_FORMATION];
 
@@ -311,51 +325,54 @@ private :
                 min_column[i] = -1.0;
                 for(j=0;j<NBR_INTERFACES;++j)// parcours de chaque ligne
                 {
-                    if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))//on trouve le min de la colonne
+                    if(M(j, i)>=0 && (min_column[i]<0||min_column[i]>M(j, i)))//on trouve le min de la colonne
                     {
-                        min_column[i] = M[j][i];
+                        min_column[i] = M(j, i);
                     }
                 }
                 for(j=0;j<NBR_INTERFACES;++j)//on soutrait le min à chaque coef de la colonne
                 {
-                    if(M[j][i]>=0)
+                    if(M(j, i)>=0)
                     {
-                        M[j][i] -= min_column[i];
+                        M(j, i) -= min_column[i];
                     }
                 }
 
             }
-            
+
             double min_row[NBR_INTERFACES];
             for(i=0;i<NBR_INTERFACES;++i)
             {
                 min_row[i] = -1;
                 for(j=0;j<NBR_FORMATION;++j)
                 {
-                    if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
+                    if(M(i, j)>=0 && (min_row[i]<0||min_row[i]>M(i, j)))
                     {
-                        min_row[i] = M[i][j];
+                        min_row[i] = M(i, j);
                     }
                 }
                 for(j=0;j<NBR_FORMATION;++j)
                 {
-                    if(M[i][j]>=0)
+                    if(M(i, j)>=0)
                     {
-                        M[i][j] -= min_row[i];
+                        M(i, j) -= min_row[i];
                     }
                 }
             }
         }
+
+        // std::cout << iteration << std::endl << M << std::endl;
+
         /* Coupe: arrêt de l'exploration de ce noeud */
         if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
         {
-            std::pair<double, double > variances = calculVariances(iteration);
+            std::pair<double, double > variances = calculVariances(iteration-1);
 
             double diffVarKm = meilleureVarianceKm - variances.first;
             double diffVarHeures = meilleureVarianceHeures - variances.second;
 
             if (diffVarKm > mfKm || diffVarHeures > mfH) {
-                std::cout << "Jme tire à l'itération " << iteration << std::endl;
+                // std::cout << "Jme tire à l'itération " << iteration << std::endl;
                 return;
             }
         }
@@ -372,24 +389,24 @@ private :
         {
             for(j=0;j<NBR_FORMATION;++j)
             {
-                if(M[i][j] == 0.0)
+                if(M(i, j) == 0.0)
                 {
                     double min_row_zero = -1;
                     double min_column_zero = -1;
                     //recherche du min de la ligne
                     for(int y1=0;y1<NBR_FORMATION;++y1)
                     {
-                        if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>M[i][y1])) && (y1!=j))
+                        if((M(i, y1)>=0 && (min_row_zero<0||min_row_zero>M(i, y1))) && (y1!=j))
                         {
-                            min_row_zero = M[i][y1];
+                            min_row_zero = M(i, y1);
                         }
                     }
                     //recherche du min de la colonne
                     for(int y2=0; y2<NBR_INTERFACES; y2++)
                     {
-                        if((M[y2][j]>=0 && (min_column_zero<0||min_column_zero>M[y2][j])) && (y2!=i))
+                        if((M(y2, j)>=0 && (min_column_zero<0||min_column_zero>M(y2, j))) && (y2!=i))
                         {
-                            min_column_zero = M[y2][j];
+                            min_column_zero = M(y2, j);
                         }
                     }
                     double this_zero = min_row_zero + min_column_zero;
@@ -404,7 +421,7 @@ private :
         }
         if(max_zero == -3)
         {
-            std::cout << "Solution Infaisable" << std::endl;
+            // std::cout << "Solution Infaisable" << std::endl;
             return;
         }
 
@@ -416,7 +433,7 @@ private :
         mettreAJourSolution(iteration, izero, jzero);
 
         /* Fais les modifications sur une copie de la matrice */
-        Matrice M2(M);
+        Matrice M2(&M);
 
         /**
          *  Modifie la matrice M2 en fonction du choix du zero de pénalité max
@@ -424,32 +441,32 @@ private :
         // ajout de la distance pour la tache à tout les éléments de la ligne du zero
         for(int y=0;y<NBR_FORMATION;++y)
         {
-            if(M2[izero][y] != -1)
+            if(M2(izero, y) != -1)
             {
                 //(duree*distance)/duree_totale
-                M2[izero][y] = (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
+                M2(izero, y)= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
             }
         }
         // met à -1 tout les éléments de la colonne du zero
         for(int y=0;y<NBR_INTERFACES;++y)
         {
-            M2[y][jzero] = -1;
+            M2(y, jzero) = -1;
         }
 
-        std::cout << iteration << std::endl << M << std::endl;
+        // std::cout << iteration << std::endl << M << std::endl;
 
         /* Explore le noeud enfant gauche conformément au choix donné */
         resoudreAlgorithme(&M2, iteration + 1, mfKm, mfH);
 
         /* fait les modification sur une copie de la matrice */
-        Matrice M3(M);
+        Matrice M3(&M);
 
         /**
          *  Modifie la matrice pour explorer l'autre possibilité, le nom choix
          *  du zero avec pénalité max
          */
 
-        M3[izero][jzero] = -1;
+        M3(izero, jzero) = -1;
 
         /* explore le noeud enfant droit conformément au non-choix */
         resoudreAlgorithme(&M3, iteration, mfKm, mfH);
