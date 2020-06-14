@@ -288,49 +288,50 @@ private :
          * soustrait le min de chaque line et le min de chaque colonne
          * et met à jour l'évaluation du noeud actuel
          */
-
-        long min_column[NBR_FORMATION];
-
-        for(i=0;i<NBR_FORMATION;++i)//parcours de chaque colonne
+        if (iteration>NBR_INTERFACES)
         {
-            min_column[i] = -1.0;
-            for(j=0;j<NBR_INTERFACES;++j)// parcours de chaque ligne
-            {
-                if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))//on trouve le min de la colonne
-                {
-                    min_column[i] = M[j][i];
-                }
-            }
-            for(j=0;j<NBR_INTERFACES;++j)//on soutrait le min à chaque coef de la colonne
-            {
-                if(M[j][i]>=0)
-                {
-                    M[j][i] -= min_column[i];
-                }
-            }
+            long min_column[NBR_FORMATION];
 
-        }
-        
-        double min_row[NBR_INTERFACES];
-        for(i=0;i<NBR_INTERFACES;++i)
-        {
-            min_row[i] = -1;
-            for(j=0;j<NBR_FORMATION;++j)
+            for(i=0;i<NBR_FORMATION;++i)//parcours de chaque colonne
             {
-                if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
+                min_column[i] = -1.0;
+                for(j=0;j<NBR_INTERFACES;++j)// parcours de chaque ligne
                 {
-                    min_row[i] = M[i][j];
+                    if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))//on trouve le min de la colonne
+                    {
+                        min_column[i] = M[j][i];
+                    }
                 }
-            }
-            for(j=0;j<NBR_FORMATION;++j)
-            {
-                if(M[i][j]>=0)
+                for(j=0;j<NBR_INTERFACES;++j)//on soutrait le min à chaque coef de la colonne
                 {
-                    M[i][j] -= min_row[i];
+                    if(M[j][i]>=0)
+                    {
+                        M[j][i] -= min_column[i];
+                    }
                 }
-            }
-        }
 
+            }
+            
+            double min_row[NBR_INTERFACES];
+            for(i=0;i<NBR_INTERFACES;++i)
+            {
+                min_row[i] = -1;
+                for(j=0;j<NBR_FORMATION;++j)
+                {
+                    if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
+                    {
+                        min_row[i] = M[i][j];
+                    }
+                }
+                for(j=0;j<NBR_FORMATION;++j)
+                {
+                    if(M[i][j]>=0)
+                    {
+                        M[i][j] -= min_row[i];
+                    }
+                }
+            }
+        }
         /* Coupe: arrêt de l'exploration de ce noeud */
         if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
         {
@@ -412,7 +413,7 @@ private :
             if(M2[izero][y] != -1)
             {
                 //(duree*distance)/duree_totale
-                M2[izero][y]= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
+                M2[izero][y] = (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
             }
         }
         // met à -1 tout les éléments de la colonne du zero
