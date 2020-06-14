@@ -38,8 +38,8 @@ private :
     }
 
     void mettreAJourSolution(int iteration, int indiceInterface, int indiceFormation) {
-        _choix[iteration-1].first = indiceInterface;
-        _choix[iteration-1].second = indiceFormation;
+        _choix[iteration-1].first = indiceFormation;
+        _choix[iteration-1].second = indiceInterface;
     }
 
     double distancePourFormation(int indiceInterface, int indiceFormation) {
@@ -156,7 +156,7 @@ private :
     }
 
     std::pair<double, double> calculVariances() {
-        return calculVariances(NBR_FORMATION+1);
+        return calculVariances(NBR_FORMATION-1);
     }
 
     std::pair<double, double> calculVariances(int iteration) {
@@ -338,7 +338,7 @@ private :
         /* Coupe: arrêt de l'exploration de ce noeud */
         if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
         {
-            std::pair<double, double > variances = calculVariances(iteration);
+            std::pair<double, double > variances = calculVariances(iteration-1);
 
             double diffVarKm = meilleureVarianceKm - variances.first;
             double diffVarHeures = meilleureVarianceHeures - variances.second;
@@ -405,7 +405,7 @@ private :
         mettreAJourSolution(iteration, izero, jzero);
 
         /* Fais les modifications sur une copie de la matrice */
-        Matrice M2(M);
+        Matrice M2(&M);
 
         /**
          *  Modifie la matrice M2 en fonction du choix du zero de pénalité max
@@ -432,7 +432,7 @@ private :
         resoudreAlgorithme(&M2, iteration + 1, mfKm, mfH);
 
         /* fait les modification sur une copie de la matrice */
-        Matrice M3(M);
+        Matrice M3(&M);
 
         /**
          *  Modifie la matrice pour explorer l'autre possibilité, le nom choix

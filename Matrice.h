@@ -37,7 +37,7 @@ public:
 
         createMatrix();
 
-        std::memcpy(_matrice, autre._matrice, sizeof(bool)*_lignes*_colonnes);
+        std::memcpy(_matrice, autre._matrice, sizeof(long)*_lignes*_colonnes);
     }
 
     Matrice(Matrice* autre) : _lignes(autre->_lignes), _colonnes(autre->_colonnes) {
@@ -45,7 +45,11 @@ public:
 
         createMatrix();
 
-        std::memcpy(_matrice, autre->_matrice, sizeof(bool)*_lignes*_colonnes);
+        for(unsigned int i = 0; i < _lignes; ++i) {
+            for(unsigned int j = 0; j < _colonnes; ++j) {
+                this->_matrice[i][j] = autre->_matrice[i][j];
+            }
+        }
     }
 
     long* operator[](int x) {
