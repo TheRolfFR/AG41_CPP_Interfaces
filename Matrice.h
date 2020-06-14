@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <iomanip>
 #include "jeuEssai.h"
 
 class Matrice {
@@ -52,16 +53,16 @@ public:
     }
 
     friend std::ostream &operator<<(std::ostream &os, const Matrice &matrice) {
-        os << "_lignes: "
+        os << "Matrice ["
         << matrice._lignes
-        << " _colonnes: "
+        << ", "
         << matrice._colonnes
-        << " _matrice: "
+        << "]"
         << std::endl;
 
         for(int i = 0; i < matrice._lignes; ++i) {
             for(int j = 0; j < matrice._colonnes; ++j) {
-                os << matrice._matrice[i][j] << " ";
+                os << matrice._matrice[i][j] << std::setprecision(2) << " ";
             }
             os << std::endl;
         }
@@ -70,6 +71,9 @@ public:
     }
 
     virtual ~Matrice() {
+        for(unsigned int i = 0; i < _lignes; ++i) {
+            delete _matrice[i];
+        }
         delete _matrice;
     }
 };
