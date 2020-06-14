@@ -47,10 +47,6 @@ public:
         std::memcpy(_matrice, autre->_matrice, sizeof(bool)*_lignes*_colonnes);
     }
 
-    long get(int x, int y) {
-        return _matrice[x][y];
-    }
-
     long* operator[](int x) {
         return _matrice[x];
     }
@@ -71,14 +67,6 @@ public:
         }
 
         return os;
-    }
-
-    void ajouter(long valeur) {
-        for(int i = 0; i < _lignes; ++i) {
-            for(int j = 0; j < _colonnes; ++j) {
-                _matrice[i][j] += valeur;
-            }
-        }
     }
 
     virtual ~Matrice() {
