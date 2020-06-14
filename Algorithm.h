@@ -235,7 +235,7 @@ public :
                 {
                     //do nothing
                 }*/
-                if (competences_interfaces[i] != formation[j][2]) // vérification des compétences des interfaces 
+                if (competences_interfaces[i][formation[j][INDICE_COMPETENCE_INTERFACE_FORMATION]] == 0) // vérification des compétences des interfaces
                     M2[i][j] = -1;
             }
         }
