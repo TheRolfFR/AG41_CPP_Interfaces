@@ -273,23 +273,6 @@ private :
         {
             for(int j=0;j<NBR_FORMATION;++j)
             {
-                /* try
-                 {
-                     if(formation[j][1] == -1)
-                         throw "Sans formation.";
-                     else
-                     {
-                         if(formation[j][1] != specialite_interfaces[i]) // vérification des spécialités des interfaces
-                         {
-                             M2(i, j) = -1;
-                         }
-                     }
-
-                 }
-                 catch (String const& chaine)
-                 {
-                     //do nothing
-                 }*/
                 if (competences_interfaces[i][formation[j][INDICE_COMPETENCE_INTERFACE_FORMATION]] == 0) // vérification des compétences des interfaces
                     M(i, j) = -1;
             }
