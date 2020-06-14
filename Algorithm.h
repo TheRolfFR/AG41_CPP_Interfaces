@@ -327,14 +327,13 @@ public:
 
     }
 
-
-    std::pair<double, double > variances = calculVariances();
-
-
     /* Coupe: arrêt de l'exploration de ce noeud */
-    if (variances.first >10 || variances.second>10)
-      return;
-
+    if (meilleureVarianceHeures!=-1 && meilleureVarianceKm!=-1)
+    {
+        std::pair<double, double > variances = calculVariances();
+        if (variances.first >10 || variances.second>10)
+            return;
+    }
     /**
      *  Additionne les pénalités pour trouver le zéro avec max pénalités
      *  S'il n'y a pas de zéro dans la matrice retourne "matrice infesable"
