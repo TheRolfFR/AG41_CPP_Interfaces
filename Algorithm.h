@@ -331,6 +331,8 @@ private :
             }
         }
 
+        std::cout << iteration << std::endl << M << std::endl;
+
         /* Coupe: arrêt de l'exploration de ce noeud */
         if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
         {

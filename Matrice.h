@@ -71,9 +71,6 @@ public:
     }
 
     virtual ~Matrice() {
-        for(unsigned int i = 0; i < _lignes; ++i) {
-            delete _matrice[i];
-        }
         delete _matrice;
     }
 };
