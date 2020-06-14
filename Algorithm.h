@@ -289,26 +289,6 @@ private :
          * et met à jour l'évaluation du noeud actuel
          */
 
-        double min_row[NBR_INTERFACES];
-        for(i=0;i<NBR_INTERFACES;++i)
-        {
-            min_row[i] = -1;
-            for(j=0;j<NBR_FORMATION;++j)
-            {
-                if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
-                {
-                    min_row[i] = M[i][j];
-                }
-            }
-            for(j=0;j<NBR_FORMATION;++j)
-            {
-                if(M[i][j]>=0)
-                {
-                    M[i][j] -= min_row[i];
-                }
-            }
-        }
-
         long min_column[NBR_FORMATION];
 
         for(i=0;i<NBR_INTERFACES;++i)
@@ -329,6 +309,26 @@ private :
                 }
             }
 
+        }
+        
+        double min_row[NBR_INTERFACES];
+        for(i=0;i<NBR_INTERFACES;++i)
+        {
+            min_row[i] = -1;
+            for(j=0;j<NBR_FORMATION;++j)
+            {
+                if(M[i][j]>=0 && (min_row[i]<0||min_row[i]>M[i][j]))
+                {
+                    min_row[i] = M[i][j];
+                }
+            }
+            for(j=0;j<NBR_FORMATION;++j)
+            {
+                if(M[i][j]>=0)
+                {
+                    M[i][j] -= min_row[i];
+                }
+            }
         }
 
         /* Coupe: arrêt de l'exploration de ce noeud */
@@ -407,14 +407,14 @@ private :
          *  Modifie la matrice M2 en fonction du choix du zero de pénalité max
          */
         // ajout de la distance pour la tache à tout les éléments de la ligne du zero
-        /*for(int y=0;y<NBR_FORMATION;++y)
+        for(int y=0;y<NBR_FORMATION;++y)
         {
             if(M2[izero][y] != -1)
             {
                 //(duree*distance)/duree_totale
                 M2[izero][y]= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
             }
-        }*/
+        }
         // met à -1 tout les éléments de la colonne du zero
         for(int y=0;y<NBR_INTERFACES;++y)
         {
