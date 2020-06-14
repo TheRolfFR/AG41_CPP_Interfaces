@@ -6,10 +6,11 @@
 #define AG41_PROJET_POSITIONINTERFACES_H
 
 #include "jeuEssai.h"
+#include "Position.h"
 
 class PositionInterfaces : public Informations {
 private:
-    std::pair<double, double> _positions[NBR_INTERFACES];
+    Position _positions[NBR_INTERFACES];
 public:
     void nouvelleJournee() {
         for(int i = 0; i < NBR_INTERFACES; ++i) {
@@ -18,7 +19,7 @@ public:
         }
     }
 
-    std::pair<double, double> operator[](int x) {
+    Position operator[](int x) {
         return _positions[x];
     }
 };
