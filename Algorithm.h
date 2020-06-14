@@ -24,6 +24,8 @@ private :
     std::vector<std::pair<int, int>> meilleureSolution;
     PositionInterfaces position;
 
+    double distanceTotaleParcourue = VALEUR_DEFAUT_MEILLEURE_VARIANCE;
+
     long sommeDureeFormations = 0;
 
     std::vector<std::pair<int, int>> _choix; ///< indice de la formation, indice de l'interface affectée
@@ -54,6 +56,15 @@ private :
     void mettreAJourSolution(int iteration, int indiceInterface, int indiceFormation) {
         _choix[iteration-1].first = indiceFormation;
         _choix[iteration-1].second = indiceInterface;
+    }
+
+    double distanceTotale(int iteration) {
+        double somme = 0;
+        for(int i = 0; i < iteration; ++i) {
+            somme += distancePourFormation(_choix[i].second, _choix[i].first);
+        }
+
+        return somme;
     }
 
     double distancePourFormation(int indiceInterface, int indiceFormation) {
@@ -210,6 +221,8 @@ private :
         meilleureVarianceHeures = varianceHeures;
         meilleureSolution = _choix;
 
+        distanceTotaleParcourue = distanceTotale(NBR_FORMATION);
+
         std::cout << "Variance de km    : " << varianceKm << std::endl;
         std::cout << "Variance d'heures : " << varianceHeures << std::endl;
 
@@ -251,8 +264,6 @@ private :
             affectationMeilleureSolution(varianceKm, varianceHeures);
             meilleureSolution = _choix;
         }
-
-        return;
     }
     //initialisation de M
     //Si l'interface i est compétente pour une tâche y, M[i][y]=0 sinon M[i][y]=-1
@@ -283,7 +294,6 @@ private :
                     M(i, j) = -1;
             }
         }
-        return;
     };
 
     void resoudreAlgorithme(Matrice *M0, int iteration, double mfKm, double mfH)
@@ -368,7 +378,7 @@ private :
         /* Coupe: arrêt de l'exploration de ce noeud */
         if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
         {
-            std::pair<double, double > variances = calculVariances(iteration-1);
+            std::pair<double, double > variances = calculVariances(iteration);
 
             double diffVarKm = meilleureVarianceKm - variances.first;
             double diffVarHeures = meilleureVarianceHeures - variances.second;
@@ -378,6 +388,15 @@ private :
                 return;
             }
         }
+
+        // on regarde la distance parcourue par toutes les interfaces à cet itération là
+        if(distanceTotaleParcourue != VALEUR_DEFAUT_MEILLEURE_VARIANCE) {
+            if(distanceTotale(iteration) > distanceTotaleParcourue) {
+                //std::cout << "La distance parcourue est plus grande que celle d'une solution" << std::endl;
+                return;
+            }
+        }
+
         /**
          *  Additionne les pénalités pour trouver le zéro avec max pénalités
          *  S'il n'y a pas de zéro dans la matrice retourne "matrice infesable"
@@ -450,12 +469,12 @@ private :
             }
         }
         // met à -1 tout les éléments de la colonne du zero
-        for(y=0;y<NBR_INTERFACES;++y)
+        for(int y=0;y<NBR_INTERFACES;++y)
         {
             M2(y, jzero) = -1;
         }
 
-        for(y = 0; y<NBR_FORMATION;y++)
+        for(int y = 0; y<NBR_FORMATION;y++)
         {
             if (!interfaceDisponible(izero, y, iteration) && M2(izero, y) != -1)
             {
@@ -464,7 +483,7 @@ private :
         }
         if (heuresDeLaSemaine(izero)>=35)
         {
-            for(y=0;y<NBR_FORMATION;++y)
+            for(int y=0;y<NBR_FORMATION;++y)
             {
                 M2(izero, y) = -1;
             }
