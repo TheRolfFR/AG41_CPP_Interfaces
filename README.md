@@ -16,7 +16,7 @@ Afin de compiler le projet, vous pouvez lancer le fichier **bash build.sh** :
 Afin de lancer le projet, vous pouvez lancer le fichier **run.sh** :
 
 ```
-./run.sh
+./run.sh <FLUCTUATION_MAX_KM> <FLUCTUATION_MAX_HEURES>
 ```
 
 ## Dépot GitHub du projet

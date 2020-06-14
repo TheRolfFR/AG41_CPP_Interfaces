@@ -1,1 +1,1 @@
-chmod +x main && ./main
+chmod +x main && ./main $1 $2
