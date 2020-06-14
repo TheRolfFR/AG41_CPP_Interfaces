@@ -27,9 +27,9 @@ private :
 
     bool premiereJournee = true;
 
-    void mettreAJourSolution(int iteration, int indiceInterface, int interface) {
+    void mettreAJourSolution(int iteration, int indiceInterface, int indiceFormation) {
         _choix[iteration].first = indiceInterface;
-        _choix[iteration].second = interface;
+        _choix[iteration].second = indiceFormation;
     }
 
     double distancePourFormation(int indiceInterface, int indiceFormation) {
@@ -237,7 +237,6 @@ public :
                 }*/
                 if (competences_interfaces[i] != formation[j][2]) // vérification des compétences des interfaces 
                     M2[i][j] = -1;
-                }
             }
         }
         return M2;
