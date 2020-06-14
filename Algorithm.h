@@ -448,14 +448,21 @@ private :
             }
         }
         // met à -1 tout les éléments de la colonne du zero
-        for(int y=0;y<NBR_INTERFACES;++y)
+        for(y=0;y<NBR_INTERFACES;++y)
         {
             M2(y, jzero) = -1;
         }
 
-        for(int y = 0; y<NBR_FORMATION;y++)
+        for(y = 0; y<NBR_FORMATION;y++)
         {
             if (!interfaceDisponible(izero, y, iteration) && M2(izero, y) != -1)
+            {
+                M2(izero, y) = -1;
+            }
+        }
+        if (heuresDeLaSemaine(izero)>=35)
+        {
+            for(y=0;y<NBR_FORMATION;++y)
             {
                 M2(izero, y) = -1;
             }
