@@ -289,9 +289,9 @@ private :
          * et met à jour l'évaluation du noeud actuel
          */
         bool estZero = true;
+        i = 0;
         while (estZero && i<NBR_INTERFACES)
         {
-            i = 0;
             for(j=0;j<NBR_FORMATION;++j)
             {
                 if (M[i][j] == 0)
@@ -299,7 +299,7 @@ private :
                     estZero = false;
                 }
             }
-            i++
+            i++;
         }
 
         if (estZero == false)
@@ -435,7 +435,6 @@ private :
         {
             M2[y][jzero] = -1;
         }
-        M2[jzero][izero] = -1;
 
         std::cout << iteration << std::endl << M << std::endl;
 
