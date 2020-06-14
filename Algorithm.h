@@ -216,8 +216,10 @@ private :
         std::cout << "Solution : " << std::endl;
 
         for(std::vector<std::pair<int, int>>::iterator c = meilleureSolution.begin(); c != meilleureSolution.end(); ++c) {
-            std::cout << c->first << " : " << c->second << std::endl;
+            std::cout << c->first << " : " << c->second << ", ";
         }
+
+        std::cout << std:: endl;
     }
 
     void construireSolution() {
