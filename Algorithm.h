@@ -185,6 +185,21 @@ private :
         return std::pair<double, double> (sommeKm/NBR_INTERFACES, sommeHeures/NBR_INTERFACES);
     }
 
+    void affectationMeilleureSolution(double varianceKm, double varianceHeures) {
+        meilleureVarianceKm = varianceKm;
+        meilleureVarianceHeures = varianceHeures;
+        meilleureSolution = _choix;
+
+        std::cout << "Variance de km    : " << varianceKm << std::endl;
+        std::cout << "Variance d'haures : " << varianceKm << std::endl;
+
+        std::cout << "Solution : " << std::endl;
+
+        for(std::vector<std::pair<int, int>>::iterator c = meilleureSolution.begin(); c != meilleureSolution.end(); ++c) {
+            std::cout << c->first << " : " << c->second << std::endl;
+        }
+    }
+
     void construireSolution() {
         std::pair <double, double> var = calculVariances();
 
@@ -199,10 +214,7 @@ private :
 
         // pas encore de meilleure solution
         if(meilleureVarianceKm == 0 || meilleureVarianceHeures == 0) {
-            meilleureVarianceKm = varianceKm;
-            meilleureVarianceHeures = varianceHeures;
-            meilleureSolution = _choix;
-
+            affectationMeilleureSolution(varianceKm, varianceHeures);
             return;
         }
 
@@ -214,8 +226,7 @@ private :
 
 
         if(gainVariance < 0) {
-            meilleureVarianceKm = varianceKm;
-            meilleureVarianceHeures = varianceHeures;
+            affectationMeilleureSolution(varianceKm, varianceHeures);
             meilleureSolution = _choix;
         }
 
