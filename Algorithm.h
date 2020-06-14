@@ -291,17 +291,17 @@ private :
 
         long min_column[NBR_FORMATION];
 
-        for(i=0;i<NBR_FORMATION;++i)
+        for(i=0;i<NBR_FORMATION;++i)//parcours de chaque colonne
         {
             min_column[i] = -1.0;
-            for(j=0;j<NBR_INTERFACES;++j)
+            for(j=0;j<NBR_INTERFACES;++j)// parcours de chaque ligne
             {
-                if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))
+                if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))//on trouve le min de la colonne
                 {
                     min_column[i] = M[j][i];
                 }
             }
-            for(j=0;j<NBR_INTERFACES;++j)
+            for(j=0;j<NBR_INTERFACES;++j)//on soutrait le min à chaque coef de la colonne
             {
                 if(M[j][i]>=0)
                 {
