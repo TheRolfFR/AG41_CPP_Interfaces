@@ -422,6 +422,6 @@ public :
         resoudreAlgorithme(&M3, iteration /*, eval_node_child*/);
     };
 
-}
+};
 
 #endif //AG41_PROJET_ALGORITHM
