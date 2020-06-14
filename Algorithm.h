@@ -300,6 +300,7 @@ public :
             {
                 double min_row_zero = -1;
                 double min_column_zero = -1;
+                //search the maximum of the row
                 for(int y1=0;y1<NBR_FORMATION;++y1)
                 {
                     if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>d[i][y1])) && (y1!=j))
@@ -307,6 +308,7 @@ public :
                         min_row_zero = M[i][y1];
                     }
                 }
+                //search the maximum of the column
                 for(int y2=0; y2<NBR_INTERFACES; y2++)
                 {
                     if((M[y][j]>=0 && (min_column_zero<0||min_column_zero>M[y][j])) && (y!=i))
@@ -344,7 +346,7 @@ public :
     /**
      *  Modify the matrix M2 according to the choice of the zero with the max penalty
      */
-
+    // add the task distances to every row's coeficients
     for(int y=0;y<NBR_FORMATION;++y)
     {
         if(M2[izero][y] != -1)
@@ -352,6 +354,7 @@ public :
             //ajout de la distance effectuée
         }
     }
+    // put all the column's coeficients to -1 for attribute the task
     for(y=0;y<NBR_INTERFACES;++y)
     {
         M2[y][jzero] = -1;
