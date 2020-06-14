@@ -223,9 +223,8 @@ private :
     }
     //initialisation de M
     //Si l'interface i est compétente pour une tâche y, M[i][y]=0 sinon M[i][y]=-1
-    Matrice attribute(Matrice M)
+    void init(Matrice &M)
     {
-        Matrice M2(M);
         for(int i=0;i<NBR_APPRENANTS;++i)
         {
             for(int j=0;j<NBR_FORMATION;++j)
@@ -248,10 +247,10 @@ private :
                      //do nothing
                  }*/
                 if (competences_interfaces[i][formation[j][INDICE_COMPETENCE_INTERFACE_FORMATION]] == 0) // vérification des compétences des interfaces
-                    M2[i][j] = -1;
+                    M[i][j] = -1;
             }
         }
-        return M2;
+        return;
     };
 
     void resoudreAlgorithme(Matrice *M0, int iteration, double mfKm, double mfH)
@@ -431,6 +430,7 @@ public:
 
     void lancer(double mfKm, double mfH) {
         Matrice m(NBR_INTERFACES, NBR_FORMATION);
+        init(m);
         this->resoudreAlgorithme(&m, 1, mfKm, mfH);
     }
 };
