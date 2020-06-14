@@ -331,7 +331,11 @@ private :
         if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
         {
             std::pair<double, double > variances = calculVariances();
-            if (variances.first >mfKm || variances.second>mfH)
+
+            double diffVarKm = meilleureVarianceKm - variances.first;
+            double diffVarHeures = meilleureVarianceHeures - variances.second;
+
+            if (diffVarKm > mfKm || diffVarHeures > mfH)
                 return;
         }
         /**
@@ -426,7 +430,7 @@ private :
         M3[izero][jzero] = -1;
 
         /* explore le noeud enfant droit conformément au non-choix */
-        resoudreAlgorithme(&M3, iteration, 0, 0);
+        resoudreAlgorithme(&M3, iteration, mfKm, mfH);
     };
 public:
 
