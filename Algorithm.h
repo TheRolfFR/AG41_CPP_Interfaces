@@ -37,6 +37,20 @@ private :
         }
     }
 
+    bool interfaceDisponible(int indiceInterface, int indiceFormation, int iteration) {
+        bool resultat = true;
+
+        unsigned int i = 0;
+        while(i < iteration && resultat) {
+            if(_choix[i].second == indiceInterface && jourFormation(_choix[i].first) == jourFormation(indiceFormation) && formation[indiceFormation][INDICE_DEBUT_FORMATION] <= formation[_choix[i].first][INDICE_FIN_FORMATION]) {
+                resultat = false;
+            }
+            ++i;
+        }
+
+        return resultat;
+    }
+
     void mettreAJourSolution(int iteration, int indiceInterface, int indiceFormation) {
         _choix[iteration-1].first = indiceFormation;
         _choix[iteration-1].second = indiceInterface;
@@ -438,7 +452,6 @@ private :
         {
             M2(y, jzero) = -1;
         }
-        M2(jzero, izero) = -1;
 
         // std::cout << iteration << std::endl << M << std::endl;
 
