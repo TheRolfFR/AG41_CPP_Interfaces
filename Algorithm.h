@@ -154,7 +154,7 @@ private :
         return resultat;
     }
 
-    void construireSolution() {
+    std::pair<double, double> calculVariances() {
         // initialisation
         std::map<int, double> totalKm;
         std::map<int, long> totalHeures;
@@ -183,9 +183,14 @@ private :
             sommeHeures += pow(totalHeures[i] - moyenneHeures, 2);
         }
 
-        double varianceKm = sommeKm/NBR_INTERFACES;
-        double varianceHeures = sommeHeures/NBR_INTERFACES;
+        return std::pair<double, double> (sommeKm/NBR_INTERFACES, sommeHeures/NBR_INTERFACES);
+    }
 
+    void construireSolution() {
+        std::pair <double, double> var = calculVariances();
+
+        double varianceKm = var.first/NBR_INTERFACES;
+        double varianceHeures = var.second/NBR_INTERFACES;
         /*
          * La meilleure solution se base sur le gain en poucentage de variablité de la variance sommé entre heures et distances)
          */
