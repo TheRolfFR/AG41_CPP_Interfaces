@@ -1,1 +1,0 @@
-g++ main.cpp -o main -Wall -Wno-unknown-pragmas && chmod +x main && ./main
