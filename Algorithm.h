@@ -20,6 +20,7 @@ private :
     double meilleureVarianceKm = 0;
     double meilleureVarianceHeures = 0;
     std::vector<std::pair<int, int>> meilleureSolution;
+    PositionInterfaces position;
 
     long best_eval = -1;
     std::vector<std::pair<int, int>> _choix; ///< indice de la formation, indice de l'interface affectée
@@ -177,8 +178,8 @@ private :
         return;
     }
 public :
-    //initialisation of M
-    //If the interface i can apply for a task y so M[i][y]=0 else M[i][y]=-1
+    //initialisation de M
+    //Si l'interface i est compétente pour une tâche y, M[i][y]=0 sinon M[i][y]=-1
     Matrice attribute(Matrice M)
     {
         Matrice M2(M);
@@ -186,13 +187,13 @@ public :
         {
             for(int j=0;j<NBR_FORMATION;++j)
             {
-                try
+               /* try
                 {
                     if(formation[j][1] == -1)
                         throw "Sans formation.";
                     else
                     {
-                        if(formation[j][1] != specialite_interfaces[i]) // interface scpecialities verification
+                        if(formation[j][1] != specialite_interfaces[i]) // vérification des spécialités des interfaces
                         {
                             M2[i][j] = -1;
                         }
@@ -202,9 +203,8 @@ public :
                 catch (String const& chaine)
                 {
                     //do nothing
-                }
-                if (competences_interfaces[i] != formation[j][2]) // interfaces skills verefication
-                {
+                }*/
+                if (competences_interfaces[i] != formation[j][2]) // vérification des compétences des interfaces 
                     M2[i][j] = -1;
                 }
             }
@@ -220,15 +220,15 @@ public :
             return;
         }
 
-    /* Do the modification on a copy of the distance matrix */
+    /* Fais les modifications sur une copie de la matrice */
 
     Matrice M(M0);
 
     int i, j ;
 
     /**
-     * substract the min of the rows and the min of the columns
-     * and update the evaluation of the current node
+     * soustrait le min de chaque line et le min de chaque colonne
+     * et met à jour l'évaluation du noeud actuel
      */
 
     double min_row[NBR_INTERFACES];
@@ -278,17 +278,17 @@ public :
         eval_node_child += min_row[i]+min_column[i];
     }
 
-    /* Cut : stop the exploration of this node */
+    /* Coupe: arrêt de l'exploration de ce noeud */
     if (best_eval>=0 && eval_node_child >= best_eval)
         return;
 
 
     /**
-     *  Compute the penalities to identify the zero with max penalty
-     *  If no zero in the matrix, then return, solution infeasible
+     *  Additionne les pénalités pour trouver le zéro avec max pénalités
+     *  S'il n'y a pas de zéro dans la matrice retourne "matrice infesable"
      */
 
-    /* row and column of the zero with the max penalty */
+    /* ligne et column du zéro avec le max pénalité */
     int izero=-1, jzero=-1 ;
     long max_zero = -3;
 
@@ -300,7 +300,7 @@ public :
             {
                 double min_row_zero = -1;
                 double min_column_zero = -1;
-                //search the maximum of the row
+                //recherche du min de la ligne
                 for(int y1=0;y1<NBR_FORMATION;++y1)
                 {
                     if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>d[i][y1])) && (y1!=j))
@@ -308,7 +308,7 @@ public :
                         min_row_zero = M[i][y1];
                     }
                 }
-                //search the maximum of the column
+                //recherche du min de la colonne
                 for(int y2=0; y2<NBR_INTERFACES; y2++)
                 {
                     if((M[y][j]>=0 && (min_column_zero<0||min_column_zero>M[y][j])) && (y!=i))
@@ -334,19 +334,18 @@ public :
 
 
     /**
-     *  Store the row and column of the zero with max penalty in
-     *  starting_town and ending_town
+     *  Met à jour l'évaluation de la solution
      */
 
     mettreAJourSolution(iteration, izero, jzero);
 
-    /* Do the modification on a copy of the distance matrix */
+    /* Fais les modifications sur une copie de la matrice */
     Matrice M2(M);
 
     /**
-     *  Modify the matrix M2 according to the choice of the zero with the max penalty
+     *  Modifie la matrice M2 en fonction du choix du zero de pénalité max
      */
-    // add the task distances to every row's coeficients
+    // ajout de la distance pour la tache à tout les éléments de la ligne du zero
     for(int y=0;y<NBR_FORMATION;++y)
     {
         if(M2[izero][y] != -1)
@@ -354,27 +353,27 @@ public :
             //ajout de la distance effectuée
         }
     }
-    // put all the column's coeficients to -1 for attribute the task
+    // met à -1 tout les éléments de la colonne du zero
     for(y=0;y<NBR_INTERFACES;++y)
     {
         M2[y][jzero] = -1;
     }
     M2[jzero][izero] = -1;
 
-    /* Explore left child node according to given choice */
+    /* Explore le noeud enfant gauche conformément au choix donné */
         resoudreAlgorithme(M2, iteration + 1, eval_node_child);
 
-    /* Do the modification on a copy of the distance matrix */
+    /* fait les modification sur une copie de la matrice */
     Matrice M3(M);
 
     /**
-     *  Modify the dist matrix to explore the other possibility : the non-choice
-     *  of the zero with the max penalty
+     *  Modifie la matrice pour explorer l'autre possibilité, le nom choix
+     *  du zero avec pénalité max
      */
 
     M3[izero][jzero] = -1;
 
-        /* Explore right child node according to non-choice */
+        /* explore le noeud enfant droit conformément au non-choix */
         resoudreAlgorithme(M3, iteration, eval_node_child);
     };
 
