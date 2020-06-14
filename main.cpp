@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     Algorithm a;
 
     std::cout << "Lancement de l'algorithme..." << std::endl;
-    a.lancer();
+    a.lancer(fluctuationMaxKm, fluctuationMaxHeures);
     std::cout << "Fin de l'algorithme" << std::endl;
 
     return 0;

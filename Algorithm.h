@@ -254,7 +254,7 @@ private :
         return M2;
     };
 
-    void resoudreAlgorithme(Matrice* M0, int iteration)
+    void resoudreAlgorithme(Matrice *M0, int iteration, double mfKm, double mfH)
     {
         if (iteration == NBR_FORMATION)
         {
@@ -319,7 +319,7 @@ private :
         if (meilleureVarianceHeures!=-1 && meilleureVarianceKm!=-1)
         {
             std::pair<double, double > variances = calculVariances();
-            if (variances.first >10 || variances.second>10)
+            if (variances.first >mfKm || variances.second>mfH)
                 return;
         }
         /**
@@ -401,7 +401,7 @@ private :
         M2[jzero][izero] = -1;
 
         /* Explore le noeud enfant gauche conformément au choix donné */
-        resoudreAlgorithme(&M2, iteration + 1 );
+        resoudreAlgorithme(&M2, iteration + 1, 0, 0);
 
         /* fait les modification sur une copie de la matrice */
         Matrice M3(M);
@@ -414,7 +414,7 @@ private :
         M3[izero][jzero] = -1;
 
         /* explore le noeud enfant droit conformément au non-choix */
-        resoudreAlgorithme(&M3, iteration );
+        resoudreAlgorithme(&M3, iteration, 0, 0);
     };
 public:
 
@@ -429,9 +429,9 @@ public:
 
     }
 
-    void lancer() {
+    void lancer(double mfKm, double mfH) {
         Matrice m(NBR_INTERFACES, NBR_FORMATION);
-        this->resoudreAlgorithme(&m, 1);
+        this->resoudreAlgorithme(&m, 1, mfKm, mfH);
     }
 };
 
