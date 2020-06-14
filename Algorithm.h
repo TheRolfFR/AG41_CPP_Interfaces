@@ -397,14 +397,14 @@ private :
          *  Modifie la matrice M2 en fonction du choix du zero de pénalité max
          */
         // ajout de la distance pour la tache à tout les éléments de la ligne du zero
-        for(int y=0;y<NBR_FORMATION;++y)
+        /*for(int y=0;y<NBR_FORMATION;++y)
         {
             if(M2[izero][y] != -1)
             {
                 //(duree*distance)/duree_totale
                 M2[izero][y]= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/ (double) sommeDureeFormations;
             }
-        }
+        }*/
         // met à -1 tout les éléments de la colonne du zero
         for(int y=0;y<NBR_INTERFACES;++y)
         {
