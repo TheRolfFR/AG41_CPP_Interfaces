@@ -1,4 +1,0 @@
-/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /mnt/f/Documents/UTBM/INFO2/gl41/ag41-projet
--- Configuring done
--- Generating done
--- Build files have been written to: /mnt/f/Documents/UTBM/INFO2/gl41/ag41-projet/cmake-build-debug

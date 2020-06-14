@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/gl41_projet.dir/main.cpp.o  -o gl41_projet 
