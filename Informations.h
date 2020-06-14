@@ -26,13 +26,19 @@ protected:
     static double distanceEntre(int source, int destination) {
         if(source == INDICE_CENTRE_SESSAD && destination == INDICE_CENTRE_SESSAD)
             return 0;
-        if(source == INDICE_CENTRE_SESSAD)
-            return sqrt(pow(coord[destination][0], 2) + pow(coord[destination][1], 2));
-        if(destination == INDICE_CENTRE_SESSAD)
-            return sqrt(pow(coord[source][0], 2) + pow(coord[source][1], 2));
 
-        double diffX = pow(coord[destination][0] - coord[source][0], 2);
-        double diffY = pow(coord[destination][1] - coord[source][1], 2);
+        if(source == INDICE_CENTRE_SESSAD)
+            return distanceEntre(std::pair<double, double> (0, 0), destination);
+
+        return distanceEntre(std::pair<double, double> (coord[source][0], coord[source][1]), destination);
+    }
+
+    static double distanceEntre(std::pair<double, double> posSource, int destination) {
+        if(destination == INDICE_CENTRE_SESSAD)
+            return sqrt(pow(posSource.first, 2) + pow(posSource.second, 2));
+
+        double diffX = pow(coord[destination][0] - posSource.first, 2);
+        double diffY = pow(coord[destination][1] - posSource.second, 2);
         return sqrt(diffX + diffY);
     }
 

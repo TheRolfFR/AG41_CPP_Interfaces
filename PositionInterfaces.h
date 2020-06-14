@@ -7,13 +7,20 @@
 
 #include "jeuEssai.h"
 
-class PositionInterfaces {
+class PositionInterfaces : public Informations {
 private:
-    std::pair<float, float> _positions[NBR_INTERFACES];
+    std::pair<double, double> _positions[NBR_INTERFACES];
 public:
-    PositionInterfaces();
-    void nouvelleJournee();
-    std::pair<float, float> operator[](int x);
+    void nouvelleJournee() {
+        for(int i = 0; i < NBR_INTERFACES; ++i) {
+            _positions[i].first = 0.0;
+            _positions[i].second = 0.0;
+        }
+    }
+
+    std::pair<double, double> operator[](int x) {
+        return _positions[x];
+    }
 };
 
 

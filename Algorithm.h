@@ -24,9 +24,33 @@ private :
     long best_eval = -1;
     std::vector<std::pair<int, int>> _choix; ///< indice de la formation, indice de l'interface affectée
 
+    bool premiereJournee = true;
+
     void mettreAJourSolution(int iteration, int indiceInterface, int interface) {
         _choix[iteration].first = indiceInterface;
         _choix[iteration].second = interface;
+    }
+
+    double distancePourFormation(int indiceInterface, int indiceFormation) {
+        double resultat = 0;
+        // si c'est le début de journée, on revient chez soi et le lendemain
+        // on va de chez soi à la SESSAD puis de la SESSAD à la maison de l'apprenant
+        if(_positions[indiceInterface].first == 0.0 && _positions[indiceInterface].second == 0.0) {
+            if(!premiereJournee) {
+                // on ajoute le trajet de la veille
+                resultat += 0;
+            }
+
+            // on ajoute le trajet du domicile au SESSAD
+            resultat += distanceEntre(maisonInterface(indiceInterface), INDICE_CENTRE_SESSAD);
+
+            premiereJournee = false;
+        }
+
+        // puis du SESSAD au domicile
+        resultat += distanceEntre(INDICE_CENTRE_SESSAD, maisonApprenti(indiceFormation));
+
+        return resultat;
     }
 
     long heuresDuJour(int interface, int jour) {
