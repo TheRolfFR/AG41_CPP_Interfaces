@@ -14,6 +14,8 @@
 #include "Informations.h"
 #include "PositionInterfaces.h"
 
+#define VALEUR_DEFAUT_MEILLEURE_VARIANCE -1
+
 class Algorithm : public Informations
 {
 private :
@@ -36,8 +38,8 @@ private :
     }
 
     void mettreAJourSolution(int iteration, int indiceInterface, int indiceFormation) {
-        _choix[iteration].first = indiceInterface;
-        _choix[iteration].second = indiceFormation;
+        _choix[iteration-1].first = indiceInterface;
+        _choix[iteration-1].second = indiceFormation;
     }
 
     double distancePourFormation(int indiceInterface, int indiceFormation) {
@@ -191,7 +193,7 @@ private :
         meilleureSolution = _choix;
 
         std::cout << "Variance de km    : " << varianceKm << std::endl;
-        std::cout << "Variance d'haures : " << varianceKm << std::endl;
+        std::cout << "Variance d'heures : " << varianceHeures << std::endl;
 
         std::cout << "Solution : " << std::endl;
 
@@ -213,7 +215,7 @@ private :
         double diffVarianceHeures = meilleureVarianceHeures - varianceHeures;
 
         // pas encore de meilleure solution
-        if(meilleureVarianceKm == 0 || meilleureVarianceHeures == 0) {
+        if(meilleureVarianceKm == VALEUR_DEFAUT_MEILLEURE_VARIANCE || meilleureVarianceHeures == VALEUR_DEFAUT_MEILLEURE_VARIANCE) {
             affectationMeilleureSolution(varianceKm, varianceHeures);
             return;
         }
@@ -266,7 +268,7 @@ private :
 
     void resoudreAlgorithme(Matrice *M0, int iteration, double mfKm, double mfH)
     {
-        if (iteration == NBR_FORMATION)
+        if (iteration == NBR_FORMATION+1)
         {
             construireSolution();
             return;
@@ -326,7 +328,7 @@ private :
         }
 
         /* Coupe: arrêt de l'exploration de ce noeud */
-        if (meilleureVarianceHeures!=-1 && meilleureVarianceKm!=-1)
+        if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
         {
             std::pair<double, double > variances = calculVariances();
             if (variances.first >mfKm || variances.second>mfH)
@@ -411,7 +413,7 @@ private :
         M2[jzero][izero] = -1;
 
         /* Explore le noeud enfant gauche conformément au choix donné */
-        resoudreAlgorithme(&M2, iteration + 1, 0, 0);
+        resoudreAlgorithme(&M2, iteration + 1, mfKm, mfH);
 
         /* fait les modification sur une copie de la matrice */
         Matrice M3(M);
@@ -429,8 +431,8 @@ private :
 public:
 
     Algorithm() :
-        meilleureVarianceKm(-1),
-        meilleureVarianceHeures(-1),
+        meilleureVarianceKm(VALEUR_DEFAUT_MEILLEURE_VARIANCE),
+        meilleureVarianceHeures(VALEUR_DEFAUT_MEILLEURE_VARIANCE),
         meilleureSolution(NBR_FORMATION, std::pair<int, int>(-1,-1)),
         position(),
         _choix(NBR_FORMATION, std::pair<int, int>(-1,-1)) {
