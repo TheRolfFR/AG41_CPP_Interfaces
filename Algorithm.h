@@ -333,7 +333,7 @@ private :
             }
         }
 
-        std::cout << iteration << std::endl << M << std::endl;
+        // std::cout << iteration << std::endl << M << std::endl;
 
         /* Coupe: arrêt de l'exploration de ce noeud */
         if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
@@ -426,7 +426,7 @@ private :
         }
         M2[jzero][izero] = -1;
 
-        std::cout << iteration << std::endl << M << std::endl;
+        // std::cout << iteration << std::endl << M << std::endl;
 
         /* Explore le noeud enfant gauche conformément au choix donné */
         resoudreAlgorithme(&M2, iteration + 1, mfKm, mfH);
