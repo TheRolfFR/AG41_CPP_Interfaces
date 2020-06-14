@@ -10,8 +10,8 @@ int main(int argc, char* argv[]) {
     if(argc < 3) {
         std::cout << "Le programme nécessite 2 arguments : <FLUCTUATION_MAX_KM> <FLUCTUATION_MAX_HEURES>" << std::endl;
 
-        fluctuationMaxKm = 600;
-        fluctuationMaxHeures = 30;
+        fluctuationMaxKm = 10;
+        fluctuationMaxHeures = 10;
 
         std::cout << "Il sera lancé avec les valeurs par défaut : " << fluctuationMaxKm << " " << fluctuationMaxHeures << std::endl;
     } else {
