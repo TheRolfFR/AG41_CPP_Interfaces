@@ -347,7 +347,7 @@ public :
                 //recherche du min de la ligne
                 for(int y1=0;y1<NBR_FORMATION;++y1)
                 {
-                    if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>d[i][y1])) && (y1!=j))
+                    if((M[i][y1]>=0 && (min_row_zero<0||min_row_zero>M[i][y1])) && (y1!=j))
                     {
                         min_row_zero = M[i][y1];
                     }
@@ -355,9 +355,9 @@ public :
                 //recherche du min de la colonne
                 for(int y2=0; y2<NBR_INTERFACES; y2++)
                 {
-                    if((M[y][j]>=0 && (min_column_zero<0||min_column_zero>M[y][j])) && (y!=i))
+                    if((M[y2][j]>=0 && (min_column_zero<0||min_column_zero>M[y2][j])) && (y2!=i))
                     {
-                        min_column_zero = M[y][j];
+                        min_column_zero = M[y2][j];
                     }
                 }
                 double this_zero = min_row_zero + min_column_zero;
