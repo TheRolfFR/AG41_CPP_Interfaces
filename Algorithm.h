@@ -17,8 +17,8 @@
 class Algorithm : public Informations
 {
 private :
-    double meilleureVarianceKm = 0;
-    double meilleureVarianceHeures = 0;
+    double meilleureVarianceKm;
+    double meilleureVarianceHeures;
     std::vector<std::pair<int, int>> meilleureSolution;
     PositionInterfaces position;
 
@@ -222,9 +222,17 @@ private :
 
         return;
     }
-public :
-    Algorithm() {
+public:
+
+    Algorithm() :
+        meilleureVarianceKm(-1),
+        meilleureVarianceHeures(-1),
+        meilleureSolution(NBR_FORMATION, std::pair<int, int>(-1,-1)),
+        position(),
+        _choix(NBR_FORMATION, std::pair<int, int>(-1,-1)) {
+
         calculSommeDureeFormations();
+
     }
     //initialisation de M
     //Si l'interface i est compétente pour une tâche y, M[i][y]=0 sinon M[i][y]=-1
