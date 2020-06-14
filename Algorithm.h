@@ -455,6 +455,13 @@ private :
             M2(y, jzero) = -1;
         }
 
+        for(int y = 0; y<NBR_FORMATION;y++)
+        {
+            if (!interfaceDisponible(izero, y, iteration) && M2(izero, y) != -1)
+            {
+                M2(izero, y) = -1;
+            }
+        }
         // std::cout << iteration << std::endl << M << std::endl;
 
         /* Explore le noeud enfant gauche conformément au choix donné */
