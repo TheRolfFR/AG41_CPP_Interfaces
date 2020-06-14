@@ -422,6 +422,10 @@ public :
         resoudreAlgorithme(&M3, iteration /*, eval_node_child*/);
     };
 
+    void lancer() {
+        Matrice m(NBR_INTERFACES, NBR_FORMATION);
+        this->resoudreAlgorithme(&m, 1);
+    }
 };
 
 #endif //AG41_PROJET_ALGORITHM

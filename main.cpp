@@ -5,8 +5,9 @@
 #include "Matrice.h"
 
 int main() {
-    Matrice m = Matrice(10, 10);
+    Algorithm a;
 
-    std::cout << "coucou" << std::endl;
+    a.lancer();
+
     return 0;
 }
