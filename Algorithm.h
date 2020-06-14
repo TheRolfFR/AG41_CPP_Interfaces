@@ -216,8 +216,10 @@ private :
         std::cout << "Solution : " << std::endl;
 
         for(std::vector<std::pair<int, int>>::iterator c = meilleureSolution.begin(); c != meilleureSolution.end(); ++c) {
-            std::cout << c->first << " : " << c->second << std::endl;
+            std::cout << c->first << " : " << c->second << ", ";
         }
+
+        std::cout << std:: endl;
     }
 
     void construireSolution() {
@@ -372,7 +374,7 @@ private :
             double diffVarHeures = meilleureVarianceHeures - variances.second;
 
             if (diffVarKm > mfKm || diffVarHeures > mfH) {
-                // std::cout << "Jme tire à l'itération " << iteration << std::endl;
+                std::cout << "Je m'arrête à l'itération " << iteration << std::endl;
                 return;
             }
         }
