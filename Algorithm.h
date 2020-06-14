@@ -374,7 +374,7 @@ private :
             double diffVarHeures = meilleureVarianceHeures - variances.second;
 
             if (diffVarKm > mfKm || diffVarHeures > mfH) {
-                // std::cout << "Jme tire à l'itération " << iteration << std::endl;
+                std::cout << "Je m'arrête à l'itération " << iteration << std::endl;
                 return;
             }
         }
