@@ -54,7 +54,7 @@ protected:
     }
 
     static int maisonFormation(int indiceFormation) {
-        return formation[indiceFormation][]
+        return formation[indiceFormation][INDICE_SPECIALITE_FORMATION];
     }
 
     static int maisonInterface(int interface) {
