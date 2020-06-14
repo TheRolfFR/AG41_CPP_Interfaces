@@ -328,7 +328,7 @@ public:
     }
 
 
-    double std::pair<double, double > variances = calculVariances();
+    std::pair<double, double > variances = calculVariances();
 
 
     /* Coupe: arrêt de l'exploration de ce noeud */
