@@ -36,7 +36,7 @@ private :
         double resultat = 0;
         // si c'est le début de journée, on revient chez soi et le lendemain
         // on va de chez soi à la SESSAD puis de la SESSAD à la maison de l'apprenant
-        if(_positions[indiceInterface].first == 0.0 && _positions[indiceInterface].second == 0.0) {
+        if(position[indiceInterface].first == 0.0 && position[indiceInterface].second == 0.0) {
             if(!premiereJournee) {
                 // on ajoute le trajet de la veille
                 resultat += 0;
@@ -48,8 +48,15 @@ private :
             premiereJournee = false;
         }
 
-        // puis du SESSAD au domicile
-        resultat += distanceEntre(INDICE_CENTRE_SESSAD, maisonApprenti(indiceFormation));
+        int mNouvelApprenti = maisonApprenti(indiceFormation);
+        int mFormation = maisonFormation(indiceFormation);
+
+        // puis de la ou j'étais au domicile du nouvel apprenant
+        resultat += distanceEntre(INDICE_CENTRE_SESSAD, mNouvelApprenti);
+
+        // puis du nouvel apprenant au centre de formation
+        // puis du centre de formation a la maison de l'apprenti
+        resultat += 2* distanceEntre(mNouvelApprenti, mFormation);
 
         return resultat;
     }
