@@ -399,7 +399,7 @@ public :
         }
     }
     // met à -1 tout les éléments de la colonne du zero
-    for(y=0;y<NBR_INTERFACES;++y)
+    for(int y=0;y<NBR_INTERFACES;++y)
     {
         M2[y][jzero] = -1;
     }
