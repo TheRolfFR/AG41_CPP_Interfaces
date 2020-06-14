@@ -291,17 +291,17 @@ private :
 
         long min_column[NBR_FORMATION];
 
-        for(i=0;i<NBR_INTERFACES;++i)
+        for(i=0;i<NBR_FORMATION;++i)
         {
             min_column[i] = -1.0;
-            for(j=0;j<NBR_FORMATION;++j)
+            for(j=0;j<NBR_INTERFACES;++j)
             {
                 if(M[j][i]>=0 && (min_column[i]<0||min_column[i]>M[j][i]))
                 {
                     min_column[i] = M[j][i];
                 }
             }
-            for(j=0;j<NBR_FORMATION;++j)
+            for(j=0;j<NBR_INTERFACES;++j)
             {
                 if(M[j][i]>=0)
                 {
