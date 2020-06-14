@@ -357,7 +357,6 @@ private :
         {
             for(j=0;j<NBR_FORMATION;++j)
             {
-                std::cout << iteration << std::endl << M << std::endl;
                 if(M[i][j] == 0.0)
                 {
                     double min_row_zero = -1;
@@ -422,6 +421,8 @@ private :
             M2[y][jzero] = -1;
         }
         M2[jzero][izero] = -1;
+
+        std::cout << iteration << std::endl << M << std::endl;
 
         /* Explore le noeud enfant gauche conformément au choix donné */
         resoudreAlgorithme(&M2, iteration + 1, mfKm, mfH);
