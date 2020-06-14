@@ -176,6 +176,8 @@ private :
         return;
     }
 public :
+    //initialisation of M
+    //If the interface i can apply for a task y so M[i][y]=0 else M[i][y]=-1
     Matrice attribute(Matrice M)
     {
         Matrice M2(M);
@@ -339,7 +341,7 @@ public :
     Matrice M2(M);
 
     /**
-     *  Modify the matrix d2 according to the choice of the zero with the max penalty
+     *  Modify the matrix M2 according to the choice of the zero with the max penalty
      */
 
     for(int y=0;y<NBR_FORMATION;++y)
@@ -369,13 +371,9 @@ public :
     M3[izero][jzero] = -1;
 
         /* Explore right child node according to non-choice */
-        solve_algorithm(&M2, iteration, eval_node_child);
+        solve_algorithm(M3, iteration, eval_node_child);
     };
 
-    void update_hach();
-    void update_matrice();
-    void create_matrice();
-    void eval();
 }
 
 #endif //AG41_PROJET_ALGORITHM
