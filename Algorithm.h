@@ -288,7 +288,21 @@ private :
          * soustrait le min de chaque line et le min de chaque colonne
          * et met à jour l'évaluation du noeud actuel
          */
-        if (iteration>NBR_INTERFACES)
+        bool estZero = true;
+        while (estZero && i<NBR_INTERFACES)
+        {
+            i = 0;
+            for(j=0;j<NBR_FORMATION;++j)
+            {
+                if (M[i][j] == 0)
+                {
+                    estZero = false;
+                }
+            }
+            i++
+        }
+
+        if (estZero == false)
         {
             long min_column[NBR_FORMATION];
 
