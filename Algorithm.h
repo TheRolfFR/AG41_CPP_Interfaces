@@ -22,7 +22,7 @@ private :
     std::vector<std::pair<int, int>> meilleureSolution;
     PositionInterfaces position;
 
-    long best_eval = -1;
+    //long best_eval = -1;
     std::vector<std::pair<int, int>> _choix; ///< indice de la formation, indice de l'interface affectée
 
     bool premiereJournee = true;
@@ -242,7 +242,7 @@ public :
         return M2;
     };
 
-    void resoudreAlgorithme(Matrice* M0, int iteration, long eval_node_parent)
+    void resoudreAlgorithme(Matrice* M0, int iteration /*, long eval_node_parent*/)
     {
         if (iteration == NBR_FORMATION)
         {
@@ -255,6 +255,8 @@ public :
     Matrice M(M0);
 
     int i, j ;
+
+    //double eval_node_child = eval_node_parent;
 
     /**
      * soustrait le min de chaque line et le min de chaque colonne
@@ -303,14 +305,14 @@ public :
 
     }
 
-    for(i=0;i<NBR_INTERFACES;++i)
+    /*for(i=0;i<NBR_INTERFACES;++i)
     {
         eval_node_child += min_row[i]+min_column[i];
-    }
+    }*/
 
     /* Coupe: arrêt de l'exploration de ce noeud */
-    if (best_eval>=0 && eval_node_child >= best_eval)
-        return;
+    //if (best_eval>=0 && eval_node_child >= best_eval)
+     //   return;
 
 
     /**
@@ -380,7 +382,12 @@ public :
     {
         if(M2[izero][y] != -1)
         {
-            //ajout de la distance effectuée
+            for(int z=0;z<NBR_FORMATION;z++)
+            {
+                int somme_duree_formation += dureeFormation(z);
+            }
+            //(duree*distance)/duree_totale
+            M2[izero][y]= (dureeFormation(jzero)*distancePourFormation(izero,jzero))/somme_duree_formation;
         }
     }
     // met à -1 tout les éléments de la colonne du zero
@@ -391,7 +398,7 @@ public :
     M2[jzero][izero] = -1;
 
     /* Explore le noeud enfant gauche conformément au choix donné */
-        resoudreAlgorithme(M2, iteration + 1, eval_node_child);
+        resoudreAlgorithme(M2, iteration + 1 /*, eval_node_child*/);
 
     /* fait les modification sur une copie de la matrice */
     Matrice M3(M);
@@ -404,7 +411,7 @@ public :
     M3[izero][jzero] = -1;
 
         /* explore le noeud enfant droit conformément au non-choix */
-        resoudreAlgorithme(M3, iteration, eval_node_child);
+        resoudreAlgorithme(M3, iteration /*, eval_node_child*/);
     };
 
 }
