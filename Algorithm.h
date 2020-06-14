@@ -104,7 +104,7 @@ private :
         return somme;
     };
 
-    std::pair<double, long> totalInterface(int interface) {
+    std::pair<double, long> totalInterface(int interface, int iteration) {
         std::pair<double, long> resultat;
         resultat.first = 0;
         resultat.second = 0;
@@ -120,7 +120,7 @@ private :
         for(std::vector<std::pair<int, int>>::iterator c = _choix.begin(); c != _choix.end(); c++) {
             indiceInterface = c->second;
 
-            if(indiceInterface == interface) { // si c'est la bonne interface
+            if(indiceInterface == interface && interface < iteration) { // si c'est la bonne interface
                 indiceFormation = c->first;
 
                 if(jour != jourFormation(indiceFormation)) { // si c'est un jour différent, on part du sessad
@@ -156,6 +156,10 @@ private :
     }
 
     std::pair<double, double> calculVariances() {
+        return calculVariances(NBR_FORMATION+1);
+    }
+
+    std::pair<double, double> calculVariances(int iteration) {
         // initialisation
         std::map<int, double> totalKm;
         std::map<int, long> totalHeures;
@@ -164,7 +168,7 @@ private :
         double sommeKm = 0;
         long sommeHeures = 0;
         for(unsigned int i = 0; i < NBR_INTERFACES; ++i) {
-            std::pair<double, long> res = totalInterface(i);
+            std::pair<double, long> res = totalInterface(i, iteration);
 
             totalKm[i] = res.first;
             totalHeures[i] = res.second;
@@ -330,9 +334,15 @@ private :
         /* Coupe: arrêt de l'exploration de ce noeud */
         if (meilleureVarianceHeures != VALEUR_DEFAUT_MEILLEURE_VARIANCE && meilleureVarianceKm != VALEUR_DEFAUT_MEILLEURE_VARIANCE)
         {
-            std::pair<double, double > variances = calculVariances();
-            if (variances.first >mfKm || variances.second>mfH)
+            std::pair<double, double > variances = calculVariances(iteration);
+
+            double diffVarKm = meilleureVarianceKm - variances.first;
+            double diffVarHeures = meilleureVarianceHeures - variances.second;
+
+            if (diffVarKm > mfKm || diffVarHeures > mfH) {
+                std::cout << "Jme tire à l'itération " << iteration << std::endl;
                 return;
+            }
         }
         /**
          *  Additionne les pénalités pour trouver le zéro avec max pénalités
@@ -347,6 +357,7 @@ private :
         {
             for(j=0;j<NBR_FORMATION;++j)
             {
+                std::cout << iteration << std::endl << M << std::endl;
                 if(M[i][j] == 0.0)
                 {
                     double min_row_zero = -1;
@@ -379,7 +390,7 @@ private :
         }
         if(max_zero == -3)
         {
-            /*printf("Solution Infesable\n");*/
+            std::cout << "Solution Infaisable" << std::endl;
             return;
         }
 
@@ -426,7 +437,7 @@ private :
         M3[izero][jzero] = -1;
 
         /* explore le noeud enfant droit conformément au non-choix */
-        resoudreAlgorithme(&M3, iteration, 0, 0);
+        resoudreAlgorithme(&M3, iteration, mfKm, mfH);
     };
 public:
 
