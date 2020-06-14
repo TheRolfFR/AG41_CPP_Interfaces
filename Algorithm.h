@@ -12,6 +12,7 @@
 #include "Matrice.h"
 #include "jeuEssai.h"
 #include "Informations.h"
+#include "PositionInterfaces.h"
 
 class Algorithm : public Informations
 {
@@ -211,7 +212,7 @@ public :
         return M2;
     };
 
-    void solve_algorithm(Matrice* M0, int iteration, long eval_node_parent)
+    void resoudreAlgorithme(Matrice* M0, int iteration, long eval_node_parent)
     {
         if (iteration == NBR_FORMATION)
         {
@@ -361,7 +362,7 @@ public :
     M2[jzero][izero] = -1;
 
     /* Explore left child node according to given choice */
-    solve_algorithm(M2, iteration + 1, eval_node_child);
+        resoudreAlgorithme(M2, iteration + 1, eval_node_child);
 
     /* Do the modification on a copy of the distance matrix */
     Matrice M3(M);
@@ -374,7 +375,7 @@ public :
     M3[izero][jzero] = -1;
 
         /* Explore right child node according to non-choice */
-        solve_algorithm(M3, iteration, eval_node_child);
+        resoudreAlgorithme(M3, iteration, eval_node_child);
     };
 
 }
