@@ -14,11 +14,9 @@ class Matrice {
 private:
     int _lignes;
     int _colonnes;
-    long **_matrice;
+    std::vector<long*> _matrice;
 
     void createMatrix() {
-        _matrice = new long *[_lignes];
-
         for(int i = 0; i < _lignes; ++i) {
             _matrice[i] = new long[_colonnes];
 
@@ -28,24 +26,27 @@ private:
         }
     }
 public:
-    Matrice(int lignes, int colonnes) : _lignes(lignes), _colonnes(colonnes) {
+    Matrice(int lignes, int colonnes) : _lignes(lignes), _colonnes(colonnes), _matrice(lignes, nullptr) {
         createMatrix();
     }
 
-    Matrice(const Matrice& autre) : _lignes(autre._lignes), _colonnes(autre._colonnes) {
-        _matrice = new long*[_lignes];
-
+    Matrice(const Matrice& autre) : _lignes(autre._lignes), _colonnes(autre._colonnes), _matrice(autre._lignes, nullptr) {
         createMatrix();
 
-        std::memcpy(_matrice, autre._matrice, sizeof(long)*_lignes*_colonnes);
+        for(unsigned int i = 0; i < _lignes; ++i) {
+            this->_matrice[i] = new long[_colonnes];
+            for(unsigned int j = 0; j < _colonnes; ++j) {
+                this->_matrice[i][j] = autre._matrice[i][j];
+            }
+        }
     }
 
-    Matrice(Matrice* autre) : _lignes(autre->_lignes), _colonnes(autre->_colonnes) {
-        _matrice = new long*[_lignes];
+    Matrice(Matrice* autre) : _lignes(autre->_lignes), _colonnes(autre->_colonnes), _matrice(autre->_lignes, nullptr)  {
 
         createMatrix();
 
         for(unsigned int i = 0; i < _lignes; ++i) {
+            this->_matrice[i] = new long[_colonnes];
             for(unsigned int j = 0; j < _colonnes; ++j) {
                 this->_matrice[i][j] = autre->_matrice[i][j];
             }
@@ -72,10 +73,6 @@ public:
         }
 
         return os;
-    }
-
-    virtual ~Matrice() {
-        delete _matrice;
     }
 };
 

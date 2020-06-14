@@ -289,9 +289,9 @@ private :
          * et met à jour l'évaluation du noeud actuel
          */
         bool estZero = true;
+        i = 0;
         while (estZero && i<NBR_INTERFACES)
         {
-            i = 0;
             for(j=0;j<NBR_FORMATION;++j)
             {
                 if (M[i][j] == 0)
@@ -299,10 +299,10 @@ private :
                     estZero = false;
                 }
             }
-            i++
+            i++;
         }
 
-        if (estZero == false)
+        if (!estZero)
         {
             long min_column[NBR_FORMATION];
 
@@ -407,7 +407,7 @@ private :
         }
         if(max_zero == -3)
         {
-            std::cout << "Solution Infaisable" << std::endl;
+            // std::cout << "Solution Infaisable" << std::endl;
             return;
         }
 
